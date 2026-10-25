@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario Seguro a WhatsApp</title>
+    <style>
+        :root {
+            --primary-color: #25D366; /* Verde WhatsApp */
+            --dark-color: #075E54;
+            --bg-color: #f4f7f6;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .contacto-container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            max-width: 450px;
+            width: 100%;
+        }
+        h2 {
+            color: var(--dark-color);
+            margin-top: 0;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        input[type="text"], select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .checkbox-label {
+            font-weight: normal;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        .btn-whatsapp {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            width: 100%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.3s ease;
+        }
+        .btn-whatsapp:hover {
+            background-color: #128C7E;
+        }
+    </style>
+</head>
+<body>
+
+<div class="contacto-container">
+    <h2>Solicitar Información</h2>
+    
+    <!-- Todo se procesa en el navegador, no hay atributo 'action' hacia un servidor -->
+    <form id="whatsappForm" onsubmit="enviarWhatsApp(event)">
+        
+        <!-- Nombre opcional para personalizar el saludo -->
+        <div class="form-group">
+            <label for="nombre">Mi Nombre:</label>
+            <input type="text" id="nombre" placeholder="Ej. Juan Pérez" required>
+        </div>
+
+        <!-- Opción 1: Menú desplegable (Selección única) -->
+        <div class="form-group">
+            <label for="servicio">Servicio de Interés:</label>
+            <select id="servicio" required>
+                <option value="">-- Selecciona una opción --</option>
+                <option value="Diseño Web">Diseño Web</option>
+                <option value="Consultoría">Consultoría de Seguridad</option>
+                <option value="Mantenimiento">Mantenimiento de Sitio</option>
+            </select>
+        </div>
+
+        <!-- Opción 2: Casillas de verificación (Selección múltiple) -->
+        <div class="form-group">
+            <label>Extras requeridos:</label>
+            <div class="checkbox-group">
+                <label class="checkbox-label"><input type="checkbox" name="extras" value="Optimización SEO"> Optimización SEO</label>
+                <label class="checkbox-label"><input type="checkbox" name="extras" value="Soporte 24/7"> Soporte 24/7</label>
+                <label class="checkbox-label"><input type="checkbox" name="extras" value="Migración de Servidor"> Migración de Servidor</label>
+            </div>
+        </div>
+
+        <!-- Botón de envío -->
+        <button type="submit" class="btn-whatsapp">
+            💬 Solicitar por WhatsApp
+        </button>
+    </form>
+</div>
+
+<script>
+function enviarWhatsApp(event) {
+    event.preventDefault(); // Evita que la página se recargue
+
+    // 1. REEMPLAZA ESTE NÚMERO con el tuyo (incluye código de país, sin espacios ni símbolos)
+    // Ejemplo: 521XXXXXXXXXX para México, 34XXXXXXXXX para España
+    const telefonoTelefono = "521234567890"; 
+
+    // 2. Capturar los valores del formulario
+    const nombre = document.getElementById('nombre').value.trim();
+    const servicio = document.getElementById('servicio').value;
+    
+    // Obtener los checkboxes seleccionados
+    const checkboxes = document.querySelectorAll('input[name="extras"]:checked');
+    let extras = [];
+    checkboxes.forEach((checkbox) => {
+        extras.push(checkbox.value);
+    });
+    
+    // Si no seleccionó extras, poner un texto por defecto
+    const extrasTexto = extras.length > 0 ? extras.join(", ") : "Ninguno";
+
+    // 3. Construir el mensaje con saltos de línea ordenados
+    // Usamos %0A para los saltos de línea y %20 para los espacios en la URL
+    let mensaje = `¡Hola! Me interesa solicitar información.%0A%0A`;
+    mensaje += `*Nombre:* ${nombre}%0A`;
+    mensaje += `*Servicio principal:* ${servicio}%0A`;
+    mensaje += `*Extras:* ${extrasTexto}`;
+
+    // 4. Construir la URL final de WhatsApp
+    // Usamos ://whatsapp.com para que sea compatible tanto en celular como en computadora
+    const urlWhatsApp = `https://://whatsapp.com/send?phone=${telefonoTelefono}&text=${mensaje}`;
+
+    // 5. Redirigir al usuario en una pestaña nueva
+    window.open(urlWhatsApp, '_blank');
+}
+</script>
+
+</body>
+</html>
