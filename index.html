@@ -112,8 +112,15 @@
     opacity: .45; transition: opacity .4s, box-shadow .4s;
   }
   .card:hover::after { opacity: 1; box-shadow: 0 0 14px 1px rgba(45,212,238,.8); }
-  .ghost-num { color: rgba(120,150,255,.18); text-shadow: 0 0 18px rgba(91,140,255,.35); transition: color .4s, text-shadow .4s; }
-  .card:hover .ghost-num { color: rgba(140,170,255,.5); text-shadow: 0 0 24px rgba(91,140,255,.7); }
+  .ghost-num {
+    color: transparent; -webkit-text-stroke: 1.2px rgba(91,140,255,.6);
+    text-shadow: 0 0 16px rgba(91,140,255,.3);
+    transition: -webkit-text-stroke-color .4s, text-shadow .4s;
+  }
+  .card:hover .ghost-num {
+    -webkit-text-stroke-color: rgba(150,185,255,.95);
+    text-shadow: 0 0 26px rgba(91,140,255,.85);
+  }
 
   .icon-chip {
     background: linear-gradient(135deg, rgba(91,140,255,.2), rgba(139,92,246,.2));
@@ -159,6 +166,39 @@
   @keyframes rise { to { transform: none; } }
   @keyframes fade-up { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
   .fade-up { opacity: 0; animation: fade-up .9s cubic-bezier(.22,1,.36,1) forwards; }
+
+  /* Modal contacto */
+  #cmodal { display: none; }
+  #cmodal.open { display: flex; }
+  #cmodal.open .panel { animation: fade-up .4s cubic-bezier(.22,1,.36,1) both; }
+  #cmodal.open #cmodal-bg { animation: fade-in .3s ease both; }
+  @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+  .field {
+    width: 100%; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.12);
+    border-radius: .8rem; padding: .75rem .95rem; color: #fff; font-size: .9rem;
+    font-family: inherit; outline: none; transition: border-color .25s, box-shadow .25s;
+  }
+  .field:focus { border-color: rgba(45,212,238,.55); box-shadow: 0 0 0 3px rgba(45,212,238,.12); }
+  .field::placeholder { color: rgba(148,161,189,.65); }
+  select.field {
+    appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="%2394a1bd" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>');
+    background-repeat: no-repeat; background-position: right .9rem center;
+  }
+  select.field option { background: #0c1326; color: #fff; }
+
+  /* Avatar chat — cometa orbitando (guiño Netscape) */
+  .chat-star {
+    position: absolute; top: 50%; left: 50%; width: 5px; height: 5px; border-radius: 50%;
+    background: #fff; box-shadow: 0 0 8px 2px rgba(255,255,255,.9), 0 0 16px 4px rgba(45,212,238,.7);
+    animation: orbit 2.6s linear infinite; opacity: 0; transition: opacity .35s;
+  }
+  #chat.thinking .chat-star { opacity: 1; }
+  @keyframes orbit { from { transform: rotate(0deg) translateX(11px); } to { transform: rotate(360deg) translateX(11px); } }
+
+  /* Nav móvil flotante — solo tras el hero */
+  #mnav { opacity: 0; transform: translateY(24px); pointer-events: none; transition: opacity .45s, transform .45s cubic-bezier(.22,1,.36,1); }
+  #mnav.show { opacity: 1; transform: none; pointer-events: auto; }
 
   .pulse-dot { position: relative; }
   .pulse-dot::after { content: ''; position: absolute; inset: -5px; border-radius: 9999px; background: rgba(45,212,238,.5); animation: pulse 2.2s ease-out infinite; }
@@ -254,6 +294,16 @@
   .svc.open .svc-chev { transform: rotate(180deg); }
   @media (min-width: 768px) { .svc-body { display: block; } }
 
+  /* Spotlight secuencial — tarjeta que invita */
+  .svc-lit { transform: translateY(-6px); border-color: rgba(91,140,255,.55); box-shadow: 0 30px 60px -30px rgba(91,140,255,.35); }
+  .svc-lit::before { opacity: 1; }
+  .svc-lit::after { opacity: 1; box-shadow: 0 0 14px 1px rgba(45,212,238,.8); }
+  .svc-lit .ghost-num { -webkit-text-stroke-color: rgba(150,185,255,.95); text-shadow: 0 0 26px rgba(91,140,255,.85); }
+  .svc-lit .svc-chev { transform: rotate(180deg); color: #2dd4ee; }
+  @media (max-width: 767px) {
+    .svc.svc-lit .svc-body { display: block; animation: fade-up .45s cubic-bezier(.22,1,.36,1) both; }
+  }
+
   #graph { touch-action: pan-y; }
 
   /* Nav */
@@ -289,7 +339,7 @@
       <a href="#ecosistema" class="hover:text-white transition">Ecosistema</a>
       <a href="#metodologia" class="hover:text-white transition">Metodología</a>
       <a href="#enfoque" class="hover:text-white transition">Enfoque</a>
-      <a href="#contacto" class="btn-primary px-4 py-2 text-white font-medium">Contacto</a>
+      <a href="#contacto" class="js-contact btn-primary px-4 py-2 text-white font-medium">Contacto</a>
     </div>
   </nav>
 </header>
@@ -330,7 +380,7 @@
 
 <!-- MARQUEE -->
 <div class="marquee relative py-5 border-y border-white/5 bg-surface/50 overflow-hidden" aria-hidden="true">
-  <div class="marquee-track font-display text-sm tracking-[.25em] uppercase text-muted/80">
+  <div class="marquee-track font-display text-[13px] tracking-[.25em] uppercase text-muted/80">
     <div class="flex items-center gap-14 pr-14">
       <span>Desarrollo a la medida</span><i data-lucide="sparkles" class="w-4 h-4 text-accent"></i>
       <span>Automatización</span><i data-lucide="sparkles" class="w-4 h-4 text-accent2"></i>
@@ -338,14 +388,24 @@
       <span>Inteligencia de negocios</span><i data-lucide="sparkles" class="w-4 h-4 text-accent"></i>
       <span>Soluciones digitales</span><i data-lucide="sparkles" class="w-4 h-4 text-accent2"></i>
       <span>Integración continua</span><i data-lucide="sparkles" class="w-4 h-4 text-accent3"></i>
+      <span>Tableros de datos</span><i data-lucide="sparkles" class="w-4 h-4 text-accent"></i>
+      <span>Análisis de procesos</span><i data-lucide="sparkles" class="w-4 h-4 text-accent2"></i>
+      <span>Soporte evolutivo</span><i data-lucide="sparkles" class="w-4 h-4 text-accent3"></i>
+      <span>Consultoría tecnológica</span><i data-lucide="sparkles" class="w-4 h-4 text-accent"></i>
+      <span>Cotización sin costo</span><i data-lucide="sparkles" class="w-4 h-4 text-accent2"></i>
     </div>
-    <div class="flex items-center gap-14 pr-14">
+    <div class="flex items-center gap-14 pr-14" aria-hidden="true">
       <span>Desarrollo a la medida</span><i data-lucide="sparkles" class="w-4 h-4 text-accent"></i>
       <span>Automatización</span><i data-lucide="sparkles" class="w-4 h-4 text-accent2"></i>
       <span>Inteligencia artificial</span><i data-lucide="sparkles" class="w-4 h-4 text-accent3"></i>
       <span>Inteligencia de negocios</span><i data-lucide="sparkles" class="w-4 h-4 text-accent"></i>
       <span>Soluciones digitales</span><i data-lucide="sparkles" class="w-4 h-4 text-accent2"></i>
       <span>Integración continua</span><i data-lucide="sparkles" class="w-4 h-4 text-accent3"></i>
+      <span>Tableros de datos</span><i data-lucide="sparkles" class="w-4 h-4 text-accent"></i>
+      <span>Análisis de procesos</span><i data-lucide="sparkles" class="w-4 h-4 text-accent2"></i>
+      <span>Soporte evolutivo</span><i data-lucide="sparkles" class="w-4 h-4 text-accent3"></i>
+      <span>Consultoría tecnológica</span><i data-lucide="sparkles" class="w-4 h-4 text-accent"></i>
+      <span>Cotización sin costo</span><i data-lucide="sparkles" class="w-4 h-4 text-accent2"></i>
     </div>
   </div>
 </div>
@@ -598,7 +658,7 @@
     <div class="reveal mt-14 inline-flex relative" style="--d:.25s">
       <span class="sonar" aria-hidden="true"></span>
       <span class="sonar" style="animation-delay:1.5s" aria-hidden="true"></span>
-      <a href="mailto:contacto@piria.mx" class="btn-primary relative px-9 py-4 font-medium text-white flex items-center gap-2.5">
+      <a href="#contacto" class="js-contact btn-primary relative px-9 py-4 font-medium text-white flex items-center gap-2.5">
         <i data-lucide="mail" class="w-4 h-4"></i> Iniciar conversación
       </a>
     </div>
@@ -616,6 +676,48 @@
   </div>
 </footer>
 
+<!-- Nav móvil flotante (aparece tras el hero) -->
+<nav id="mnav" class="fixed bottom-20 inset-x-0 z-[60] flex justify-center md:hidden" aria-label="Navegación móvil">
+  <div class="flex items-center gap-1 px-2 py-2 rounded-full border border-white/10 bg-surface/80 backdrop-blur-md shadow-[0_12px_44px_-10px_rgba(0,0,0,.85)]">
+    <a href="#servicios" class="px-3 py-1.5 text-xs text-white/80 hover:text-white transition-colors">Servicios</a>
+    <a href="#metodologia" class="px-3 py-1.5 text-xs text-white/80 hover:text-white transition-colors">Proceso</a>
+    <a href="#enfoque" class="px-3 py-1.5 text-xs text-white/80 hover:text-white transition-colors">Enfoque</a>
+    <a href="#contacto" class="js-contact btn-primary px-3.5 py-1.5 text-xs font-medium text-white">Contacto</a>
+  </div>
+</nav>
+
+<!-- Modal contacto -->
+<div id="cmodal" class="fixed inset-0 z-[90] items-center justify-center p-5" role="dialog" aria-modal="true" aria-label="Formulario de contacto">
+  <div id="cmodal-bg" class="absolute inset-0 bg-ink/80 backdrop-blur-sm"></div>
+  <div class="panel relative w-full max-w-md rounded-2xl border border-white/10 bg-card/95 backdrop-blur-md p-7 shadow-[0_30px_80px_-20px_rgba(0,0,0,.85)] overflow-hidden">
+    <div class="aurora w-[280px] h-[280px] bg-accent/25 -top-32 -right-24" aria-hidden="true"></div>
+    <button id="cclose" type="button" class="absolute top-4 right-4 w-9 h-9 rounded-full border border-white/10 text-muted hover:text-white hover:border-white/30 flex items-center justify-center transition-colors" aria-label="Cerrar">
+      <i data-lucide="x" class="w-4 h-4"></i>
+    </button>
+    <p class="text-xs tracking-[.25em] uppercase text-accent3 font-medium">Hablemos</p>
+    <h3 class="font-display text-2xl font-bold mt-2">Cuéntanos tu proyecto</h3>
+    <p class="text-sm text-muted mt-1.5">El mensaje llega directo a nuestro WhatsApp.</p>
+    <form id="cform" class="mt-6 space-y-4 relative">
+      <input class="field" id="cf-nombre" type="text" placeholder="Tu nombre" required />
+      <input class="field" id="cf-contacto" type="text" placeholder="Correo o teléfono" required />
+      <select class="field" id="cf-servicio" required>
+        <option value="" disabled selected>Servicio que te interesa</option>
+        <option>Desarrollo de sistemas a la medida</option>
+        <option>Automatización inteligente de procesos</option>
+        <option>Inteligencia artificial aplicada</option>
+        <option>Inteligencia de negocios</option>
+        <option>Soluciones digitales y comunicación</option>
+        <option>Integración y evolución tecnológica</option>
+        <option>Aún no lo sé / Otro</option>
+      </select>
+      <textarea class="field" id="cf-msg" rows="3" placeholder="Cuéntanos brevemente (opcional)"></textarea>
+      <button type="submit" class="btn-primary w-full py-3.5 font-medium text-white flex items-center justify-center gap-2">
+        <i data-lucide="message-circle" class="w-4 h-4"></i> Enviar por WhatsApp
+      </button>
+    </form>
+  </div>
+</div>
+
 <button id="sound" type="button" class="fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full border border-accent3/45 bg-surface/80 backdrop-blur flex items-center justify-center text-accent3 shadow-[0_0_22px_-4px_rgba(45,212,238,.55)] hover:border-accent3/80 transition-colors" aria-label="Activar sonido ambiente" title="Sonido ambiente">
   <span class="sonar" id="sound-ping" aria-hidden="true"></span>
   <i data-lucide="volume-x" class="w-5 h-5"></i>
@@ -624,6 +726,35 @@
   <source src="track01.m4a" type="audio/mp4" />
   <source src="track01.mp3" type="audio/mpeg" />
 </audio>
+
+<!-- Chat PIRIA -->
+<button id="chat-btn" type="button" class="fixed bottom-6 left-6 z-50 w-12 h-12 rounded-full border border-accent2/50 bg-surface/80 backdrop-blur flex items-center justify-center text-accent2 shadow-[0_0_22px_-4px_rgba(139,92,246,.6)] hover:border-accent2/80 transition-colors" aria-label="Chat PIRIA" title="Chat PIRIA">
+  <span class="sonar" id="chat-ping" aria-hidden="true"></span>
+  <i data-lucide="message-circle" class="w-5 h-5"></i>
+</button>
+<div id="chat" class="fixed bottom-24 left-4 md:left-6 z-[85] w-[min(92vw,380px)] hidden flex-col overflow-hidden rounded-2xl border border-white/10 bg-card/95 backdrop-blur-md shadow-[0_30px_80px_-20px_rgba(0,0,0,.85)]">
+  <div class="flex items-center gap-3 px-5 py-4 border-b border-white/10 bg-white/[.02]">
+    <span class="w-9 h-9 rounded-full bg-gradient-to-br from-accent to-accent2 relative overflow-hidden flex items-center justify-center shrink-0">
+      <span class="font-display font-bold text-white text-sm relative">P</span>
+      <span class="chat-star" aria-hidden="true"></span>
+    </span>
+    <div class="leading-tight">
+      <p class="font-display font-semibold text-sm">PIRIA Assistant</p>
+      <p class="text-[11px] text-accent3">en línea · responde al instante</p>
+    </div>
+    <button id="chat-close" type="button" class="ml-auto w-8 h-8 rounded-full border border-white/10 text-muted hover:text-white hover:border-white/30 flex items-center justify-center transition-colors" aria-label="Cerrar chat">
+      <i data-lucide="x" class="w-4 h-4"></i>
+    </button>
+  </div>
+  <div id="chat-msgs" class="overflow-y-auto px-4 py-4 space-y-3 max-h-[46vh] min-h-[220px] text-sm"></div>
+  <div id="chat-chips" class="px-4 pb-3 flex flex-wrap gap-2"></div>
+  <form id="chat-form" class="p-3 border-t border-white/10 flex gap-2">
+    <input id="chat-in" class="field !py-2.5 text-sm" type="text" placeholder="Pregúntanos…" autocomplete="off" />
+    <button type="submit" class="btn-primary px-4 text-white flex items-center" aria-label="Enviar">
+      <i data-lucide="send" class="w-4 h-4"></i>
+    </button>
+  </form>
+</div>
 
 <script>
   lucide.createIcons();
@@ -667,6 +798,21 @@
       b.setAttribute('aria-expanded', String(open));
     });
   });
+
+  /* ---------- Spotlight secuencial en tarjetas ---------- */
+  const svcCards = [...document.querySelectorAll('.svc')];
+  const svcSec = document.getElementById('servicios');
+  if (svcCards.length && svcSec) {
+    let litI = 0, litIv = null, engaged = false;
+    const light = () => {
+      svcCards.forEach((c, i) => c.classList.toggle('svc-lit', i === litI));
+      litI = (litI + 1) % svcCards.length;
+    };
+    const start = () => { if (litIv || engaged) return; light(); litIv = setInterval(light, 3200); };
+    const stop = () => { clearInterval(litIv); litIv = null; svcCards.forEach((c) => c.classList.remove('svc-lit')); };
+    new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting ? start() : stop()), { threshold: .25 }).observe(svcSec);
+    svcSec.addEventListener('click', () => { engaged = true; stop(); }, { once: true });
+  }
 
   /* ---------- Spotlight en cards ---------- */
   document.querySelectorAll('.card').forEach((c) => {
@@ -1177,6 +1323,160 @@
     start(); // por si el navegador ya permite audio con sonido
     addEventListener('pointerdown', () => start(), { once: true });
     addEventListener('keydown', () => start(), { once: true });
+  }
+
+  /* ---------- Nav móvil: visible solo tras el hero ---------- */
+  const mnav = document.getElementById('mnav');
+  if (mnav) addEventListener('scroll', () => mnav.classList.toggle('show', scrollY > innerHeight * .72), { passive: true });
+
+  /* ---------- Modal contacto → WhatsApp ---------- */
+  const WA_NUM = '529322010082'; // WhatsApp Business — México (+52)
+  const cmodal = document.getElementById('cmodal');
+  if (cmodal) {
+    const openC = (e) => { if (e) e.preventDefault(); cmodal.classList.add('open'); document.body.style.overflow = 'hidden'; };
+    window.piriaContact = openC;
+    const closeC = () => { cmodal.classList.remove('open'); document.body.style.overflow = ''; };
+    document.querySelectorAll('.js-contact').forEach((b) => b.addEventListener('click', openC));
+    document.getElementById('cmodal-bg').addEventListener('click', closeC);
+    document.getElementById('cclose').addEventListener('click', closeC);
+    addEventListener('keydown', (e) => { if (e.key === 'Escape') closeC(); });
+    document.getElementById('cform').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const n = document.getElementById('cf-nombre').value.trim();
+      const c = document.getElementById('cf-contacto').value.trim();
+      const s = document.getElementById('cf-servicio').value;
+      const m = document.getElementById('cf-msg').value.trim();
+      let msg = `Hola PIRIA, soy *${n}*.\nServicio de interés: *${s}*\nContacto: ${c}`;
+      if (m) msg += `\n\n${m}`;
+      window.open(`https://wa.me/${WA_NUM}?text=${encodeURIComponent(msg)}`, '_blank');
+    });
+  }
+
+  /* ---------- Chat PIRIA (asistente híbrido) ---------- */
+  const chatBtn = document.getElementById('chat-btn'), chatBox = document.getElementById('chat'),
+        chatMsgs = document.getElementById('chat-msgs'), chatChips = document.getElementById('chat-chips'),
+        chatForm = document.getElementById('chat-form'), chatIn = document.getElementById('chat-in');
+  if (chatBtn && chatBox) {
+    const KB = [
+      { k: ['hola', 'buenas', 'hey', 'hi ', 'buen dia', 'buen día', 'qué tal'],
+        r: '¡Hola! Soy el asistente de PIRIA — tu primer paso para dejar de hacer manual lo que la tecnología ya puede resolver. ¿Qué te trae: un proceso que consume horas, o algo que quieres construir?',
+        c: ['Servicios', 'Tengo un negocio', 'Agendar llamada'] },
+      { k: ['servicio', 'hacen', 'ofrecen', 'solucion', 'que hacen', 'líneas', 'tengo un negocio'],
+        r: 'De todo lo digital, solo lo que mueve la aguja:<br>· <b>Sistemas a la medida</b> — tu operación en una sola plataforma<br>· <b>Automatización</b> — lo repetitivo resolviéndose solo<br>· <b>IA aplicada</b> — análisis y decisiones que antes tomaban horas<br>· <b>Inteligencia de negocios</b> — tus datos hablando claro<br>· <b>Soluciones digitales</b> — presencia que vende<br>· <b>Integración</b> — tus herramientas hablándose entre sí<br>¿Qué duele más hoy en tu operación?',
+        c: ['Automatización', 'Datos y reportes', 'Agendar llamada'] },
+      { k: ['ia', 'inteligencia artificial', 'modelo', 'chatgpt', 'machine', 'aplicada'],
+        r: 'Respuesta honesta: aplicamos IA donde hay ROI — predicción, clasificación de información, asistentes internos, detección de patrones. Nada de IA por hype; solo donde multiplica resultados. ¿Tienes algún proceso en mente?',
+        c: ['Servicios', 'Agendar llamada'] },
+      { k: ['automat', 'manual', 'tarea', 'repetitiv', 'horas'],
+        r: 'Regla de oro: si lo haces más de 3 veces por semana y siempre igual, se puede automatizar — reportes, cotizaciones, capturas, seguimientos, alertas. ¿Cuál es la tarea que más horas se come en tu semana?',
+        c: ['Agendar llamada', 'Datos y reportes'] },
+      { k: ['tengo', 'mi empresa', 'mi negocio', 'constructora', 'restaurante', 'escuela', 'clínica', 'clinica',
+            'tienda', 'oficina', 'gobierno', 'organizac', 'despacho', 'fábrica', 'fabrica', 'hotel', 'inmobiliaria',
+            'consultorio', 'farmacia', 'gimnasio', 'agencia', 'startup', 'pyme', 'industria', 'sector'],
+        r: 'Los que más ganan con nosotros son negocios con procesos manuales pesados — constructoras, despachos, clínicas, escuelas, industria… justo como el tuyo. ¿Qué parte de tu operación te quita más tiempo?',
+        c: ['Automatización', 'Agendar llamada'] },
+      { k: ['precio', 'costo', 'cuanto', 'cuánto', 'tarifa', 'invers', 'cotiza', 'presupuesto'],
+        r: 'La pregunta honesta: ¿cuánto te cuesta HOY no resolverlo? Horas en procesos manuales, decisiones a ciegas… Cada proyecto se cotiza a la medida con alcance claro antes de firmar — y la llamada de exploración es gratis.',
+        c: ['Agendar llamada'] },
+      { k: ['proceso', 'metodolog', 'trabajan', 'etapa', 'cómo', 'como trabajan'],
+        r: 'Sin sorpresas ni cajas negras: análisis → diseño → desarrollo e integración → validación → mejora continua. Ves avances reales en cada etapa y entiendes cada paso sin tecnicismos.',
+        c: ['Agendar llamada', 'Precios'] },
+      { k: ['tiempo', 'plazo', 'tarda', 'duraci', 'entrega', 'semana', 'mes', 'pronto', 'urgente'],
+        r: 'Automatizaciones puntuales: semanas. Sistemas grandes: por etapas con entregas parciales — desde el primer mes ya usas piezas. En la llamada te damos estimado real, no promesas.',
+        c: ['Agendar llamada'] },
+      { k: ['agendar', 'contacto', 'llamada', 'cita', 'whatsapp', 'hablar', 'correo', 'email', 'reunión', 'reunion'],
+        r: 'Perfecto — te abro el formulario: 20 segundos y cae directo a nuestro WhatsApp.',
+        cta: true },
+      { k: ['quién', 'quien', 'empresa', 'equipo', 'piria', 'ustedes', 'quiénes'],
+        r: 'PIRIA = Plataforma de Investigación y Razonamiento mediante IA. Somos el equipo que convierte procesos pesados en tecnología que trabaja sola — para empresas, organizaciones e instituciones.',
+        c: ['Servicios', 'Agendar llamada'] },
+      { k: ['ubic', 'dónde', 'donde', 'ciudad', 'país', 'pais', 'físic', 'domicilio'],
+        r: 'Trabajamos 100% remoto con clientes en todo México — la cercanía la damos en comunicación: llamadas, demos en vivo y entregas por etapas. ¿Agendamos la primera?',
+        c: ['Agendar llamada'] },
+      { k: ['datos', 'reporte', 'dashboard', 'tablero', 'estadíst', 'métrica', 'dispers', 'excel', 'información'],
+        r: 'Si tu información vive regada en excels y chats, la inteligencia de negocios la convierte en tableros vivos: ventas, operación, avances — decisiones con datos, no con corazonadas.',
+        c: ['Agendar llamada', 'Servicios'] },
+      { k: ['página', 'pagina', 'web', 'sitio', 'internet', 'redes', 'presencia', 'landing'],
+        r: 'Presencia que vende: no solo se ve bien — captura, informa y convierte visitas en contactos (como esta misma página 😉). ¿Tienes sitio hoy o empezamos de cero?',
+        c: ['Agendar llamada'] },
+      { k: ['sistema', 'software', 'plataforma', 'medida', 'erp', 'crm', 'app ', 'aplicación'],
+        r: 'Cuando el software genérico ya no te queda: construimos la herramienta exacta para TU operación — usuarios, permisos, reportes, el flujo que tu equipo realmente necesita.',
+        c: ['Agendar llamada', 'Proceso'] },
+      { k: ['por qué', 'porque piria', 'porqué', 'diferencia', 'mejor', 'garant', 'confianza', 'experiencia', 'casos', 'portafolio', 'clientes'],
+        r: 'Tres cosas nos definen: 1) Nada genérico — todo se construye para tu operación. 2) Comunicación sin tecnicismos — entiendes cada paso. 3) No desaparecemos tras la entrega — mejora continua es parte del servicio.',
+        c: ['Agendar llamada', 'Proceso'] },
+      { k: ['soporte', 'mantenimiento', 'falla', 'actualizac', 'después', 'postventa'],
+        r: 'La entrega no es el final: el paso 5 de nuestra metodología es mejora continua — soporte, ajustes y evolución mientras tu necesidad crece.',
+        c: ['Agendar llamada', 'Proceso'] },
+      { k: ['gracias', 'ok', 'vale', 'genial', 'perfecto', 'listo', 'entendido'],
+        r: 'Con gusto 🙌 ¿Algo más sobre PIRIA, o agendamos la llamada de exploración?',
+        c: ['Agendar llamada'] },
+    ];
+    const FALLBACKS = [
+      'Mmm, esa se sale de mi menú — me especializo en lo que PIRIA puede construir para ti.',
+      'Buena pregunta, pero mi fuerte es hablar de PIRIA: servicios, proceso y cómo empezar.',
+      'Eso te lo responde mejor un humano del equipo — ¿te conecto por WhatsApp?',
+    ];
+    let greeted = false, fi = 0;
+    const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const scroll = () => { chatMsgs.scrollTop = chatMsgs.scrollHeight; };
+    const push = (html, me) => {
+      const d = document.createElement('div');
+      d.className = me ? 'ml-auto max-w-[80%] rounded-2xl rounded-br-md bg-accent/25 border border-accent/30 px-3.5 py-2.5 text-white'
+                       : 'mr-auto max-w-[85%] rounded-2xl rounded-bl-md bg-white/[.05] border border-white/10 px-3.5 py-2.5 text-white/90';
+      d.innerHTML = html; chatMsgs.appendChild(d); scroll(); return d;
+    };
+    const chips = (list) => {
+      chatChips.innerHTML = '';
+      (list || []).forEach((t) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'text-xs px-3 py-1.5 rounded-full border border-accent3/30 text-accent3 hover:bg-accent3/10 transition-colors';
+        b.textContent = t;
+        b.addEventListener('click', () => send(t));
+        chatChips.appendChild(b);
+      });
+    };
+    const reply = (q) => {
+      const low = ' ' + q.toLowerCase() + ' ';
+      const rule = KB.find((r) => r.k.some((k) => low.includes(k)));
+      const t = document.createElement('div');
+      t.className = 'mr-auto rounded-2xl rounded-bl-md bg-white/[.05] border border-white/10 px-3.5 py-2.5 text-muted';
+      t.textContent = '···'; chatMsgs.appendChild(t); scroll();
+      chatBox.classList.add('thinking');
+      setTimeout(() => {
+        t.remove();
+        chatBox.classList.remove('thinking');
+        if (rule) {
+          const d = push(rule.r);
+          if (rule.cta) {
+            const b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'btn-primary mt-2 px-4 py-2 text-xs font-medium text-white flex items-center gap-1.5';
+            b.textContent = 'Abrir formulario';
+            b.addEventListener('click', () => { chatBox.classList.add('hidden'); chatBox.classList.remove('flex'); window.piriaContact && window.piriaContact(); });
+            d.appendChild(b);
+          }
+          chips(rule.c);
+        } else {
+          push(FALLBACKS[fi++ % FALLBACKS.length]);
+          chips(['Servicios', 'Agendar llamada']);
+        }
+      }, 450 + Math.random() * 550);
+    };
+    const send = (text) => {
+      const q = (text || chatIn.value).trim();
+      if (!q) return;
+      push(esc(q), true); chatIn.value = ''; reply(q);
+    };
+    chatForm.addEventListener('submit', (e) => { e.preventDefault(); send(); });
+    chatBtn.addEventListener('click', () => {
+      const open = chatBox.classList.contains('hidden');
+      chatBox.classList.toggle('hidden'); chatBox.classList.toggle('flex');
+      const p = document.getElementById('chat-ping'); if (p) p.remove();
+      if (open && !greeted) { greeted = true; setTimeout(() => reply('hola'), 350); }
+    });
+    document.getElementById('chat-close').addEventListener('click', () => { chatBox.classList.add('hidden'); chatBox.classList.remove('flex'); });
   }
 </script>
 </body>
