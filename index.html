@@ -599,10 +599,14 @@
   </div>
 </footer>
 
-<button id="sound" class="fixed bottom-5 right-5 z-50 w-11 h-11 rounded-full border border-white/15 bg-surface/70 backdrop-blur flex items-center justify-center text-muted hover:text-accent3 hover:border-accent3/50 transition-colors" aria-label="Sonido ambiente" title="Sonido ambiente">
-  <i data-lucide="volume-x" class="w-4 h-4"></i>
+<button id="sound" type="button" class="fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full border border-accent3/45 bg-surface/80 backdrop-blur flex items-center justify-center text-accent3 shadow-[0_0_22px_-4px_rgba(45,212,238,.55)] hover:border-accent3/80 transition-colors" aria-label="Activar sonido ambiente" title="Sonido ambiente">
+  <span class="sonar" id="sound-ping" aria-hidden="true"></span>
+  <i data-lucide="volume-x" class="w-5 h-5"></i>
 </button>
-<audio id="bgm" src="track01.m4a" loop preload="none"></audio>
+<audio id="bgm" loop preload="none">
+  <source src="track01.m4a" type="audio/mp4" />
+  <source src="track01.mp3" type="audio/mpeg" />
+</audio>
 
 <script>
   lucide.createIcons();
@@ -1133,16 +1137,29 @@
   if (bgm && sndBtn) {
     let on = false;
     const setIcon = (n) => { sndBtn.innerHTML = `<i data-lucide="${n}" class="w-4 h-4"></i>`; lucide.createIcons(); };
+    const fadeIn = () => {
+      const iv = setInterval(() => { bgm.volume = Math.min(.35, bgm.volume + .02); if (bgm.volume >= .35) clearInterval(iv); }, 60);
+    };
+    const start = () => {
+      if (on) return;
+      bgm.muted = false;
+      bgm.volume = 0;
+      bgm.play().then(() => {
+        on = true; setIcon('volume-2'); fadeIn();
+        const p = document.getElementById('sound-ping'); if (p) p.remove();
+      }).catch(() => {});
+    };
     sndBtn.addEventListener('click', async () => {
-      if (!on) {
-        try { bgm.volume = 0; await bgm.play(); } catch (e) { return; }
-        on = true; setIcon('volume-2');
-        const iv = setInterval(() => { bgm.volume = Math.min(.35, bgm.volume + .02); if (bgm.volume >= .35) clearInterval(iv); }, 60);
-      } else {
-        on = false; setIcon('volume-x');
-        const iv = setInterval(() => { bgm.volume = Math.max(0, bgm.volume - .03); if (bgm.volume <= 0) { bgm.pause(); clearInterval(iv); } }, 60);
-      }
+      if (!on) { start(); return; }
+      on = false; setIcon('volume-x');
+      const iv = setInterval(() => { bgm.volume = Math.max(0, bgm.volume - .03); if (bgm.volume <= 0) { bgm.pause(); clearInterval(iv); } }, 60);
     });
+    // entra reproduciendo en silencio (permitido); el primer gesto lo desmutea con fade-in
+    bgm.muted = true;
+    bgm.play().catch(() => {});
+    start(); // por si el navegador ya permite audio con sonido
+    addEventListener('pointerdown', () => start(), { once: true });
+    addEventListener('keydown', () => start(), { once: true });
   }
 </script>
 </body>
