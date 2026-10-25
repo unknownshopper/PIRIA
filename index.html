@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PIRIA — Plataforma de Investigación y Razonamiento mediante Inteligencia Artificial</title>
+<meta name="description" content="En PIRIA desarrollamos soluciones tecnológicas a la medida: software, automatización, inteligencia artificial e inteligencia de negocios." />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink: '#04060e',
+          surface: '#080d1a',
+          card: '#0c1326',
+          accent: '#5b8cff',
+          accent2: '#8b5cf6',
+          accent3: '#2dd4ee',
+          muted: '#94a1bd',
+        },
+        fontFamily: {
+          display: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
+          body: ['"Inter"', 'system-ui', 'sans-serif'],
+        },
+      },
+    },
+  };
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  html { scroll-behavior: smooth; }
+  body { background: #04060e; color: #e9eefb; font-family: 'Inter', system-ui, sans-serif; overflow-x: hidden; }
+  .font-display { font-family: 'Space Grotesk', system-ui, sans-serif; }
+
+  /* Degradado animado en texto */
+  .grad-text {
+    background: linear-gradient(100deg, #5b8cff 0%, #8b5cf6 45%, #2dd4ee 100%);
+    background-size: 220% 100%;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: shimmer 7s ease-in-out infinite alternate;
+  }
+  @keyframes shimmer { to { background-position: 100% 0; } }
+  .grad-line { background: linear-gradient(90deg, #5b8cff, #8b5cf6, #2dd4ee); height: 2px; border-radius: 2px; }
+
+  /* Auroras */
+  .aurora { position: absolute; border-radius: 50%; filter: blur(110px); mix-blend-mode: screen; pointer-events: none; will-change: transform; }
+  @keyframes drift-a { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(60px,-40px) scale(1.15); } }
+  @keyframes drift-b { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-70px,50px) scale(1.1); } }
+  @keyframes drift-c { 0%,100% { transform: translate(0,0); } 50% { transform: translate(40px,60px) scale(.9); } }
+
+  /* Retícula */
+  .bg-grid {
+    background-image:
+      linear-gradient(rgba(120,150,255,.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(120,150,255,.07) 1px, transparent 1px);
+    background-size: 54px 54px;
+    -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 25%, transparent 78%);
+            mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 25%, transparent 78%);
+  }
+
+  /* Grano cinematográfico */
+  .grain {
+    position: fixed; inset: 0; z-index: 70; pointer-events: none; opacity: .05; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Reveal al hacer scroll */
+  .reveal { opacity: 0; transform: translateY(34px); transition: opacity .9s cubic-bezier(.22,1,.36,1), transform .9s cubic-bezier(.22,1,.36,1); transition-delay: var(--d, 0s); }
+  .reveal.in { opacity: 1; transform: none; }
+  .reveal-scale { opacity: 0; transform: scale(.92); transition: opacity 1s cubic-bezier(.22,1,.36,1), transform 1s cubic-bezier(.22,1,.36,1); transition-delay: var(--d, 0s); }
+  .reveal-scale.in { opacity: 1; transform: none; }
+
+  /* Cards con spotlight */
+  .card {
+    position: relative; overflow: hidden;
+    background: linear-gradient(165deg, #0c1326 0%, #080d1a 100%);
+    border: 1px solid rgba(120,150,255,.14);
+    transition: transform .4s cubic-bezier(.22,1,.36,1), border-color .4s, box-shadow .4s;
+  }
+  .card::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(340px circle at var(--mx, 50%) var(--my, 50%), rgba(91,140,255,.17), transparent 65%);
+    opacity: 0; transition: opacity .45s;
+  }
+  .card:hover::before { opacity: 1; }
+  .card:hover { transform: translateY(-6px); border-color: rgba(91,140,255,.55); box-shadow: 0 30px 60px -30px rgba(91,140,255,.35); }
+  .card > * { position: relative; }
+  .card::after {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent 5%, rgba(45,212,238,.7) 50%, transparent 95%);
+    opacity: .45; transition: opacity .4s, box-shadow .4s;
+  }
+  .card:hover::after { opacity: 1; box-shadow: 0 0 14px 1px rgba(45,212,238,.8); }
+  .ghost-num { color: rgba(120,150,255,.18); text-shadow: 0 0 18px rgba(91,140,255,.35); transition: color .4s, text-shadow .4s; }
+  .card:hover .ghost-num { color: rgba(140,170,255,.5); text-shadow: 0 0 24px rgba(91,140,255,.7); }
+
+  .icon-chip {
+    background: linear-gradient(135deg, rgba(91,140,255,.2), rgba(139,92,246,.2));
+    border: 1px solid rgba(91,140,255,.35);
+    box-shadow: inset 0 0 24px -6px rgba(91,140,255,.5);
+  }
+
+  /* Botones — cápsulas luminosas */
+  .btn-primary {
+    position: relative; overflow: hidden; border-radius: 9999px;
+    background: linear-gradient(95deg, rgba(91,140,255,.95), rgba(139,92,246,.95));
+    border: 1px solid rgba(150,180,255,.45);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.25), 0 10px 34px -10px rgba(91,140,255,.7);
+    transition: transform .3s, box-shadow .4s;
+  }
+  .btn-primary::after {
+    content: ''; position: absolute; top: 0; left: -80%; width: 55%; height: 100%;
+    background: linear-gradient(100deg, transparent, rgba(255,255,255,.45), transparent);
+    transform: skewX(-20deg); transition: left .65s ease;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 16px 44px -10px rgba(45,212,238,.65); }
+  .btn-primary:hover::after { left: 140%; }
+  .btn-ghost {
+    position: relative; overflow: hidden; border-radius: 9999px;
+    border: 1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.03);
+    transition: border-color .35s, background .35s, box-shadow .35s, transform .3s;
+  }
+  .btn-ghost:hover {
+    border-color: rgba(45,212,238,.6); background: rgba(45,212,238,.06);
+    box-shadow: 0 0 26px -8px rgba(45,212,238,.55), inset 0 0 18px -10px rgba(45,212,238,.4);
+    transform: translateY(-2px);
+  }
+  .sonar {
+    position: absolute; inset: 0; border: 1px solid rgba(45,212,238,.55); border-radius: 9999px;
+    animation: sonar 3s ease-out infinite; pointer-events: none;
+  }
+  @keyframes sonar { from { transform: scale(1); opacity: .8; } to { transform: scale(1.75); opacity: 0; } }
+
+  /* Hero */
+  .hero-line { display: block; overflow: hidden; }
+  .hero-line > span { display: block; transform: translateY(112%); animation: rise 1s cubic-bezier(.22,1,.36,1) forwards; }
+  .hero-line > span.d2 { animation-delay: .18s; }
+  @keyframes rise { to { transform: none; } }
+  @keyframes fade-up { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+  .fade-up { opacity: 0; animation: fade-up .9s cubic-bezier(.22,1,.36,1) forwards; }
+
+  .pulse-dot { position: relative; }
+  .pulse-dot::after { content: ''; position: absolute; inset: -5px; border-radius: 9999px; background: rgba(45,212,238,.5); animation: pulse 2.2s ease-out infinite; }
+  @keyframes pulse { 0% { transform: scale(.6); opacity: .8; } 100% { transform: scale(2.2); opacity: 0; } }
+
+  /* Cursor luminoso */
+  #cursor {
+    position: fixed; left: 0; top: 0; width: 560px; height: 560px; border-radius: 50%;
+    pointer-events: none; z-index: 5; will-change: transform;
+    background: radial-gradient(circle, rgba(91,140,255,.13), rgba(139,92,246,.07) 40%, transparent 65%);
+  }
+
+  /* Marquee */
+  .marquee-track { display: flex; align-items: center; width: max-content; animation: marq 30s linear infinite; }
+  @keyframes marq { to { transform: translateX(-50%); } }
+  .marquee:hover .marquee-track { animation-play-state: paused; }
+
+  /* Metodología */
+  .step-line {
+    position: absolute; top: 20px; left: 0; height: 2px; width: 100%;
+    background: linear-gradient(90deg, #5b8cff, #8b5cf6, #2dd4ee);
+    box-shadow: 0 0 14px rgba(91,140,255,.55);
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path 5.5s linear;
+  }
+  .steps.in .step-line { clip-path: inset(0 0 0 0); animation: line-flicker 3.2s linear infinite 5.5s; }
+  @keyframes line-flicker {
+    0%,100% { filter: brightness(1); }
+    8% { filter: brightness(1.6); } 12% { filter: brightness(.85); }
+    42% { filter: brightness(1.25); } 55% { filter: brightness(1); }
+    78% { filter: brightness(1.45); } 84% { filter: brightness(.95); }
+  }
+  .step-line::after {
+    content: ''; position: absolute; right: -5px; top: 50%; width: 10px; height: 10px; margin-top: -5px;
+    border-radius: 50%; background: #2dd4ee; box-shadow: 0 0 18px 5px rgba(45,212,238,.9);
+  }
+  .step-pulse {
+    position: absolute; top: -1px; left: -90px; height: 4px; width: 90px; border-radius: 4px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.95), transparent);
+    filter: blur(1px);
+    animation: pulse-travel 1.8s linear infinite;
+  }
+  @keyframes pulse-travel { from { left: -90px; } to { left: 100%; } }
+  .spark {
+    position: absolute; top: 50%; width: 4px; height: 4px; margin-top: -2px; border-radius: 50%;
+    background: #2dd4ee; box-shadow: 0 0 10px 2px rgba(45,212,238,.9);
+    animation: spark-flick 1.4s ease-in-out infinite;
+  }
+  @keyframes spark-flick { 0%,100% { opacity: .15; transform: scale(.6); } 50% { opacity: 1; transform: scale(1.5); } }
+
+  /* Metodología — versión vertical (móvil) */
+  .step-line-v {
+    position: absolute; top: 0; bottom: 0; left: 19px; width: 2px;
+    background: linear-gradient(180deg, #5b8cff, #8b5cf6, #2dd4ee);
+    box-shadow: 0 0 14px rgba(91,140,255,.55);
+    clip-path: inset(0 0 100% 0);
+    transition: clip-path 5.5s linear;
+  }
+  .steps.in .step-line-v { clip-path: inset(0); animation: line-flicker 3.2s linear infinite 5.5s; }
+  .step-line-v::after {
+    content: ''; position: absolute; bottom: -5px; left: 50%; width: 10px; height: 10px; margin-left: -5px;
+    border-radius: 50%; background: #2dd4ee; box-shadow: 0 0 18px 5px rgba(45,212,238,.9);
+  }
+  .step-pulse-v {
+    position: absolute; left: -1px; top: -90px; width: 4px; height: 90px; border-radius: 4px;
+    background: linear-gradient(180deg, transparent, rgba(255,255,255,.95), transparent);
+    filter: blur(1px);
+    animation: pulse-travel-v 1.8s linear infinite;
+  }
+  @keyframes pulse-travel-v { from { top: -90px; } to { top: 100%; } }
+  .spark-v {
+    position: absolute; left: 50%; width: 4px; height: 4px; margin-left: -2px; border-radius: 50%;
+    background: #2dd4ee; box-shadow: 0 0 10px 2px rgba(45,212,238,.9);
+    animation: spark-flick 1.4s ease-in-out infinite;
+  }
+  .steps .dot {
+    position: relative; z-index: 1; border-color: rgba(120,150,255,.25);
+    color: rgba(140,170,255,.55); background: #080d1a;
+    transition: border-color .5s, color .5s, box-shadow .5s, background .5s;
+  }
+  .steps li.lit .dot {
+    border-color: rgba(45,212,238,.9); color: #fff;
+    background: linear-gradient(135deg, #5b8cff, #8b5cf6);
+    box-shadow: 0 0 26px rgba(91,140,255,.85);
+  }
+  .steps li h3 { color: #94a1bd; transition: color .5s; }
+  .steps li.lit h3 { color: #fff; }
+
+  /* Acordeón de servicios (móvil) */
+  .svc-body { display: none; }
+  .svc.open .svc-body { display: block; animation: fade-up .45s cubic-bezier(.22,1,.36,1) both; }
+  .svc-chev { transition: transform .35s; }
+  .svc.open .svc-chev { transform: rotate(180deg); }
+  @media (min-width: 768px) { .svc-body { display: block; } }
+
+  #graph { touch-action: pan-y; }
+
+  /* Nav */
+  #navbar { transition: background .35s, box-shadow .35s, border-color .35s; }
+  #navbar.scrolled { background: rgba(4,6,14,.82); box-shadow: 0 10px 40px -20px rgba(0,0,0,.8); border-color: rgba(120,150,255,.18); }
+
+  ::selection { background: rgba(91,140,255,.4); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal, .reveal-scale, .hero-line > span, .fade-up { opacity: 1 !important; transform: none !important; animation: none !important; transition: none !important; }
+    .marquee-track, .aurora, .grad-text, .pulse-dot::after, .step-pulse, .step-pulse-v, .spark, .spark-v { animation: none !important; }
+    .step-pulse, .step-pulse-v, .spark, .spark-v { display: none; }
+    .step-line, .step-line-v { transition: none !important; clip-path: inset(0) !important; }
+    .svc.open .svc-body { animation: none !important; }
+    #cursor { display: none; }
+  }
+</style>
+</head>
+<body class="antialiased">
+
+<div class="grain" aria-hidden="true"></div>
+<div id="cursor" aria-hidden="true"></div>
+
+<!-- NAV -->
+<header id="navbar" class="fixed top-0 inset-x-0 z-50 backdrop-blur-md border-b border-transparent">
+  <nav class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+    <a href="#" class="font-display font-bold text-xl tracking-tight flex items-center gap-2.5">
+      <span class="w-2.5 h-2.5 rounded-full bg-gradient-to-br from-accent to-accent2 shadow-[0_0_14px_2px_rgba(91,140,255,.8)]"></span>
+      <span class="grad-text">PIRIA</span>
+    </a>
+    <div class="hidden md:flex items-center gap-8 text-sm text-muted">
+      <a href="#servicios" class="hover:text-white transition">Servicios</a>
+      <a href="#ecosistema" class="hover:text-white transition">Ecosistema</a>
+      <a href="#metodologia" class="hover:text-white transition">Metodología</a>
+      <a href="#enfoque" class="hover:text-white transition">Enfoque</a>
+      <a href="#contacto" class="btn-primary px-4 py-2 text-white font-medium">Contacto</a>
+    </div>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="relative min-h-screen flex items-center overflow-hidden">
+  <canvas id="particles" class="absolute inset-0 w-full h-full" aria-hidden="true"></canvas>
+  <div class="absolute inset-0 bg-grid" aria-hidden="true"></div>
+  <canvas id="tunnel" class="absolute inset-0 w-full h-full" aria-hidden="true"></canvas>
+  <div class="aurora w-[560px] h-[560px] bg-accent/60 -top-48 -left-48" style="animation:drift-a 14s ease-in-out infinite" aria-hidden="true"></div>
+  <div class="aurora w-[460px] h-[460px] bg-accent2/50 top-24 -right-40" style="animation:drift-b 18s ease-in-out infinite" aria-hidden="true"></div>
+  <div class="aurora w-[380px] h-[380px] bg-accent3/40 bottom-0 left-1/3" style="animation:drift-c 20s ease-in-out infinite" aria-hidden="true"></div>
+  <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-ink" aria-hidden="true"></div>
+
+  <div class="max-w-6xl mx-auto px-6 relative w-full pt-36 pb-24">
+    <div class="fade-up inline-flex items-center gap-3 px-4 py-2 rounded-full border border-accent/30 bg-accent/10 backdrop-blur-sm mb-8" style="animation-delay:.1s">
+      <span class="pulse-dot w-2 h-2 rounded-full bg-accent3 shrink-0"></span>
+      <span class="text-sm md:text-base tracking-widest uppercase text-white/80">Tecnología que resuelve · Inteligencia que transforma</span>
+    </div>
+
+  </div>
+
+  <div class="fade-up absolute bottom-24 inset-x-0" style="animation-delay:.75s">
+    <div class="max-w-6xl mx-auto px-6 flex flex-wrap gap-4">
+      <a href="#servicios" class="btn-primary px-7 py-3.5 font-medium text-white flex items-center gap-2">
+        Explorar servicios <i data-lucide="arrow-down-right" class="w-4 h-4"></i>
+      </a>
+      <a href="#metodologia" class="btn-ghost px-7 py-3.5 text-white/90">
+        Nuestra metodología
+      </a>
+    </div>
+  </div>
+
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 fade-up" style="animation-delay:1.2s">
+    <i data-lucide="chevron-down" class="w-5 h-5 text-muted animate-bounce"></i>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee relative py-5 border-y border-white/5 bg-surface/50 overflow-hidden" aria-hidden="true">
+  <div class="marquee-track font-display text-sm tracking-[.25em] uppercase text-muted/80">
+    <div class="flex items-center gap-14 pr-14">
+      <span>Desarrollo a la medida</span><i data-lucide="sparkles" class="w-4 h-4 text-accent"></i>
+      <span>Automatización</span><i data-lucide="sparkles" class="w-4 h-4 text-accent2"></i>
+      <span>Inteligencia artificial</span><i data-lucide="sparkles" class="w-4 h-4 text-accent3"></i>
+      <span>Inteligencia de negocios</span><i data-lucide="sparkles" class="w-4 h-4 text-accent"></i>
+      <span>Soluciones digitales</span><i data-lucide="sparkles" class="w-4 h-4 text-accent2"></i>
+      <span>Integración continua</span><i data-lucide="sparkles" class="w-4 h-4 text-accent3"></i>
+    </div>
+    <div class="flex items-center gap-14 pr-14">
+      <span>Desarrollo a la medida</span><i data-lucide="sparkles" class="w-4 h-4 text-accent"></i>
+      <span>Automatización</span><i data-lucide="sparkles" class="w-4 h-4 text-accent2"></i>
+      <span>Inteligencia artificial</span><i data-lucide="sparkles" class="w-4 h-4 text-accent3"></i>
+      <span>Inteligencia de negocios</span><i data-lucide="sparkles" class="w-4 h-4 text-accent"></i>
+      <span>Soluciones digitales</span><i data-lucide="sparkles" class="w-4 h-4 text-accent2"></i>
+      <span>Integración continua</span><i data-lucide="sparkles" class="w-4 h-4 text-accent3"></i>
+    </div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section id="servicios" class="py-28 relative">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="reveal mb-16">
+      <p class="text-accent3 text-sm font-medium tracking-widest uppercase mb-3">Carta de servicios</p>
+      <h2 class="font-display text-3xl md:text-5xl font-bold tracking-tight">Nuestros servicios</h2>
+      <div class="grad-line w-24 mt-6"></div>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+      <!-- 1 -->
+      <article class="card svc reveal rounded-2xl p-7" style="--d:.05s">
+        <span class="ghost-num absolute top-5 right-6 font-display text-4xl font-bold hidden md:block">01</span>
+        <button class="svc-head flex items-center gap-4 w-full text-left md:block md:pointer-events-none" aria-expanded="false">
+          <div class="icon-chip shrink-0 w-11 h-11 rounded-xl flex items-center justify-center md:mb-5">
+            <i data-lucide="layers" class="w-5 h-5 text-accent"></i>
+          </div>
+          <h3 class="font-display text-base md:text-lg font-semibold flex-1 md:mb-2">Desarrollo de sistemas a la medida</h3>
+          <i data-lucide="chevron-down" class="svc-chev w-5 h-5 text-muted shrink-0 md:hidden"></i>
+        </button>
+        <div class="svc-body">
+          <p class="font-display text-sm font-medium grad-text mt-4 md:mt-0 mb-4">Software que se adapta a tu operación, no al revés.</p>
+        <ul class="text-sm text-muted space-y-2 leading-relaxed">
+          <li class="flex gap-2"><span class="text-accent">·</span>Tu operación, 100% digitalizada.</li>
+          <li class="flex gap-2"><span class="text-accent">·</span>Adiós a hojas de cálculo y tareas manuales.</li>
+          <li class="flex gap-2"><span class="text-accent">·</span>Todo tu equipo en una sola plataforma.</li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- 2 -->
+      <article class="card svc reveal rounded-2xl p-7" style="--d:.12s">
+        <span class="ghost-num absolute top-5 right-6 font-display text-4xl font-bold hidden md:block">02</span>
+        <button class="svc-head flex items-center gap-4 w-full text-left md:block md:pointer-events-none" aria-expanded="false">
+          <div class="icon-chip shrink-0 w-11 h-11 rounded-xl flex items-center justify-center md:mb-5">
+            <i data-lucide="workflow" class="w-5 h-5 text-accent"></i>
+          </div>
+          <h3 class="font-display text-base md:text-lg font-semibold flex-1 md:mb-2">Automatización inteligente de procesos</h3>
+          <i data-lucide="chevron-down" class="svc-chev w-5 h-5 text-muted shrink-0 md:hidden"></i>
+        </button>
+        <div class="svc-body">
+          <p class="font-display text-sm font-medium grad-text mt-4 md:mt-0 mb-4">Los procesos repetitivos trabajan solos.</p>
+        <ul class="text-sm text-muted space-y-2 leading-relaxed">
+          <li class="flex gap-2"><span class="text-accent">·</span>Menos errores, más velocidad.</li>
+          <li class="flex gap-2"><span class="text-accent">·</span>Tus herramientas hablan entre sí.</li>
+          <li class="flex gap-2"><span class="text-accent">·</span>Reportes y avisos que se generan solos.</li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- 3 -->
+      <article class="card svc reveal rounded-2xl p-7" style="--d:.19s">
+        <span class="ghost-num absolute top-5 right-6 font-display text-4xl font-bold hidden md:block">03</span>
+        <button class="svc-head flex items-center gap-4 w-full text-left md:block md:pointer-events-none" aria-expanded="false">
+          <div class="icon-chip shrink-0 w-11 h-11 rounded-xl flex items-center justify-center md:mb-5">
+            <i data-lucide="brain" class="w-5 h-5 text-accent"></i>
+          </div>
+          <h3 class="font-display text-base md:text-lg font-semibold flex-1 md:mb-2">Inteligencia artificial aplicada</h3>
+          <i data-lucide="chevron-down" class="svc-chev w-5 h-5 text-muted shrink-0 md:hidden"></i>
+        </button>
+        <div class="svc-body">
+          <p class="font-display text-sm font-medium grad-text mt-4 md:mt-0 mb-4">Tu información responde preguntas.</p>
+        <ul class="text-sm text-muted space-y-2 leading-relaxed">
+          <li class="flex gap-2"><span class="text-accent">·</span>Consulta tus datos como si conversaras.</li>
+          <li class="flex gap-2"><span class="text-accent">·</span>Informes y resúmenes en segundos.</li>
+          <li class="flex gap-2"><span class="text-accent">·</span>Detecta lo importante antes que nadie.</li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- 4 -->
+      <article class="card svc reveal rounded-2xl p-7" style="--d:.05s">
+        <span class="ghost-num absolute top-5 right-6 font-display text-4xl font-bold hidden md:block">04</span>
+        <button class="svc-head flex items-center gap-4 w-full text-left md:block md:pointer-events-none" aria-expanded="false">
+          <div class="icon-chip shrink-0 w-11 h-11 rounded-xl flex items-center justify-center md:mb-5">
+            <i data-lucide="trending-up" class="w-5 h-5 text-accent"></i>
+          </div>
+          <h3 class="font-display text-base md:text-lg font-semibold flex-1 md:mb-2">Inteligencia de negocios</h3>
+          <i data-lucide="chevron-down" class="svc-chev w-5 h-5 text-muted shrink-0 md:hidden"></i>
+        </button>
+        <div class="svc-body">
+          <p class="font-display text-sm font-medium grad-text mt-4 md:mt-0 mb-4">Decisiones con datos, no con intuición.</p>
+        <ul class="text-sm text-muted space-y-2 leading-relaxed">
+          <li class="flex gap-2"><span class="text-accent">·</span>Tableros ejecutivos siempre actualizados.</li>
+          <li class="flex gap-2"><span class="text-accent">·</span>Toda tu información en un solo lugar.</li>
+          <li class="flex gap-2"><span class="text-accent">·</span>Tendencias y alertas a simple vista.</li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- 5 -->
+      <article class="card svc reveal rounded-2xl p-7" style="--d:.12s">
+        <span class="ghost-num absolute top-5 right-6 font-display text-4xl font-bold hidden md:block">05</span>
+        <button class="svc-head flex items-center gap-4 w-full text-left md:block md:pointer-events-none" aria-expanded="false">
+          <div class="icon-chip shrink-0 w-11 h-11 rounded-xl flex items-center justify-center md:mb-5">
+            <i data-lucide="globe" class="w-5 h-5 text-accent"></i>
+          </div>
+          <h3 class="font-display text-base md:text-lg font-semibold flex-1 md:mb-2">Soluciones digitales y comunicación</h3>
+          <i data-lucide="chevron-down" class="svc-chev w-5 h-5 text-muted shrink-0 md:hidden"></i>
+        </button>
+        <div class="svc-body">
+          <p class="font-display text-sm font-medium grad-text mt-4 md:mt-0 mb-4">Experiencias impecables para tus clientes.</p>
+        <ul class="text-sm text-muted space-y-2 leading-relaxed">
+          <li class="flex gap-2"><span class="text-accent">·</span>Sitios y canales que trabajan por ti.</li>
+          <li class="flex gap-2"><span class="text-accent">·</span>Solicitudes y reservaciones sin fricción.</li>
+          <li class="flex gap-2"><span class="text-accent">·</span>Atención y seguimiento continuo.</li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- 6 -->
+      <article class="card svc reveal rounded-2xl p-7" style="--d:.19s">
+        <span class="ghost-num absolute top-5 right-6 font-display text-4xl font-bold hidden md:block">06</span>
+        <button class="svc-head flex items-center gap-4 w-full text-left md:block md:pointer-events-none" aria-expanded="false">
+          <div class="icon-chip shrink-0 w-11 h-11 rounded-xl flex items-center justify-center md:mb-5">
+            <i data-lucide="settings-2" class="w-5 h-5 text-accent"></i>
+          </div>
+          <h3 class="font-display text-base md:text-lg font-semibold flex-1 md:mb-2">Integración y evolución tecnológica</h3>
+          <i data-lucide="chevron-down" class="svc-chev w-5 h-5 text-muted shrink-0 md:hidden"></i>
+        </button>
+        <div class="svc-body">
+          <p class="font-display text-sm font-medium grad-text mt-4 md:mt-0 mb-4">Tu tecnología nunca se queda atrás.</p>
+        <ul class="text-sm text-muted space-y-2 leading-relaxed">
+          <li class="flex gap-2"><span class="text-accent">·</span>Compatible con lo que ya usas.</li>
+          <li class="flex gap-2"><span class="text-accent">·</span>Mantenimiento que previene fallas.</li>
+          <li class="flex gap-2"><span class="text-accent">·</span>Evoluciona al ritmo de tu negocio.</li>
+          </ul>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ECOSISTEMA -->
+<section id="ecosistema" class="py-28 relative overflow-hidden">
+  <div class="aurora w-[420px] h-[420px] bg-accent/30 -top-24 -right-32" style="animation:drift-c 17s ease-in-out infinite" aria-hidden="true"></div>
+  <div class="max-w-6xl mx-auto px-6 relative">
+    <div class="reveal mb-10">
+      <p class="text-accent3 text-sm font-medium tracking-widest uppercase mb-3">Un ecosistema conectado</p>
+      <h2 class="font-display text-3xl md:text-5xl font-bold tracking-tight">Todo se conecta</h2>
+      <p class="mt-4 text-muted max-w-2xl">Ninguna solución vive aislada: cada servicio potencia a los demás. Explora el mapa de relaciones.</p>
+      <div class="grad-line w-24 mt-6"></div>
+    </div>
+    <div class="reveal relative rounded-3xl border border-white/10 bg-surface/40 overflow-hidden">
+      <canvas id="graph" class="w-full h-[75vh] md:h-[560px] block"></canvas>
+      <p class="absolute bottom-4 left-1/2 -translate-x-1/2 text-xs text-muted/70 pointer-events-none">Arrastra los nodos o pasa el cursor para explorar las relaciones</p>
+    </div>
+  </div>
+</section>
+
+<!-- METHODOLOGY -->
+<section id="metodologia" class="py-28 bg-surface/40 border-y border-white/5 relative overflow-hidden">
+  <div class="aurora w-[420px] h-[420px] bg-accent2/40 -bottom-32 -left-32" style="animation:drift-b 16s ease-in-out infinite" aria-hidden="true"></div>
+  <div class="max-w-6xl mx-auto px-6 relative">
+    <div class="reveal mb-16">
+      <p class="text-accent3 text-sm font-medium tracking-widest uppercase mb-3">Cómo trabajamos</p>
+      <h2 class="font-display text-3xl md:text-5xl font-bold tracking-tight">Nuestra metodología</h2>
+      <p class="mt-4 text-muted max-w-2xl">Cada proyecto comienza con la comprensión del problema y de los objetivos de la organización.</p>
+      <div class="grad-line w-24 mt-6"></div>
+    </div>
+
+    <ol class="steps reveal relative grid md:grid-cols-5 gap-6">
+      <div class="step-line hidden md:block" aria-hidden="true">
+        <span class="step-pulse"></span>
+        <span class="spark" style="left:18%; animation-delay:.2s"></span>
+        <span class="spark" style="left:38%; animation-delay:.7s"></span>
+        <span class="spark" style="left:58%; animation-delay:1.1s"></span>
+        <span class="spark" style="left:78%; animation-delay:.5s"></span>
+      </div>
+      <div class="step-line-v md:hidden" aria-hidden="true">
+        <span class="step-pulse-v"></span>
+        <span class="spark-v" style="top:10%; animation-delay:.3s"></span>
+        <span class="spark-v" style="top:30%; animation-delay:.8s"></span>
+        <span class="spark-v" style="top:50%; animation-delay:1.2s"></span>
+        <span class="spark-v" style="top:70%; animation-delay:.5s"></span>
+        <span class="spark-v" style="top:90%; animation-delay:1s"></span>
+      </div>
+      <li class="reveal flex items-start gap-4 md:block" style="--d:.1s">
+        <div class="dot shrink-0 w-10 h-10 rounded-full border flex items-center justify-center font-display font-bold">1</div>
+        <div>
+          <h3 class="font-display font-semibold leading-10 md:leading-normal md:mt-5 mb-1">Análisis</h3>
+          <p class="text-sm text-muted leading-relaxed">Identificamos necesidades, procesos y oportunidades de mejora.</p>
+        </div>
+      </li>
+      <li class="reveal flex items-start gap-4 md:block" style="--d:.25s">
+        <div class="dot shrink-0 w-10 h-10 rounded-full border flex items-center justify-center font-display font-bold">2</div>
+        <div>
+          <h3 class="font-display font-semibold leading-10 md:leading-normal md:mt-5 mb-1">Diseño</h3>
+          <p class="text-sm text-muted leading-relaxed">Definimos la solución y su alcance.</p>
+        </div>
+      </li>
+      <li class="reveal flex items-start gap-4 md:block" style="--d:.4s">
+        <div class="dot shrink-0 w-10 h-10 rounded-full border flex items-center justify-center font-display font-bold">3</div>
+        <div>
+          <h3 class="font-display font-semibold leading-10 md:leading-normal md:mt-5 mb-1">Desarrollo e integración</h3>
+          <p class="text-sm text-muted leading-relaxed">Construimos e implementamos las herramientas necesarias.</p>
+        </div>
+      </li>
+      <li class="reveal flex items-start gap-4 md:block" style="--d:.55s">
+        <div class="dot shrink-0 w-10 h-10 rounded-full border flex items-center justify-center font-display font-bold">4</div>
+        <div>
+          <h3 class="font-display font-semibold leading-10 md:leading-normal md:mt-5 mb-1">Validación</h3>
+          <p class="text-sm text-muted leading-relaxed">Verificamos el funcionamiento con los usuarios y procesos involucrados.</p>
+        </div>
+      </li>
+      <li class="reveal flex items-start gap-4 md:block" style="--d:.7s">
+        <div class="dot shrink-0 w-10 h-10 rounded-full border flex items-center justify-center font-display font-bold">5</div>
+        <div>
+          <h3 class="font-display font-semibold leading-10 md:leading-normal md:mt-5 mb-1">Mejora continua</h3>
+          <p class="text-sm text-muted leading-relaxed">Ofrecemos mantenimiento y evolución de acuerdo con las necesidades del proyecto.</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ENFOQUE / CTA -->
+<section id="enfoque" class="py-32 relative overflow-hidden">
+  <div class="aurora w-[500px] h-[500px] bg-accent/40 top-0 -right-40" style="animation:drift-a 16s ease-in-out infinite" aria-hidden="true"></div>
+  <div class="aurora w-[380px] h-[380px] bg-accent3/30 bottom-0 -left-24" style="animation:drift-c 19s ease-in-out infinite" aria-hidden="true"></div>
+  <div class="max-w-4xl mx-auto px-6 text-center relative">
+    <p class="reveal text-accent3 text-sm font-medium tracking-widest uppercase mb-4">Una solución para cada necesidad</p>
+    <div class="reveal relative mx-auto max-w-3xl" style="--d:.15s">
+      <canvas id="morph" class="w-full h-[380px] md:h-[440px] block"></canvas>
+      <div class="absolute inset-x-0 bottom-2 flex justify-center">
+        <a href="#contacto" class="flex items-center gap-2.5 text-muted hover:text-accent3 transition-colors">
+          <span class="font-display text-xs md:text-sm tracking-[.3em] uppercase">Agenda · Contacto</span>
+          <i data-lucide="arrow-down" class="w-4 h-4 animate-bounce"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contacto" class="py-32 relative overflow-hidden">
+  <div class="aurora w-[520px] h-[520px] bg-accent2/40 -top-48 left-1/2 -translate-x-1/2" style="animation:drift-b 18s ease-in-out infinite" aria-hidden="true"></div>
+  <div class="aurora w-[400px] h-[400px] bg-accent3/30 -bottom-24 -right-24" style="animation:drift-c 16s ease-in-out infinite" aria-hidden="true"></div>
+  <div class="max-w-4xl mx-auto px-6 text-center relative">
+    <p class="reveal text-accent3 text-sm font-medium tracking-widest uppercase mb-5">El siguiente paso</p>
+    <h2 class="reveal font-display text-4xl md:text-6xl font-bold tracking-tight leading-tight" style="--d:.1s">
+      Hablemos de lo que podemos <span class="grad-text">automatizar</span> juntos.
+    </h2>
+    <div class="reveal mt-14 inline-flex relative" style="--d:.25s">
+      <span class="sonar" aria-hidden="true"></span>
+      <span class="sonar" style="animation-delay:1.5s" aria-hidden="true"></span>
+      <a href="mailto:contacto@piria.mx" class="btn-primary relative px-9 py-4 font-medium text-white flex items-center gap-2.5">
+        <i data-lucide="mail" class="w-4 h-4"></i> Iniciar conversación
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="border-t border-white/5 py-10">
+  <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+    <div>
+      <span class="font-display font-bold text-lg grad-text">PIRIA</span>
+      <p class="text-xs text-muted mt-1">Plataforma de Investigación y Razonamiento mediante Inteligencia Artificial</p>
+    </div>
+    <p class="text-sm text-muted">Tecnología con propósito. Soluciones con inteligencia.</p>
+  </div>
+</footer>
+
+<button id="sound" class="fixed bottom-5 right-5 z-50 w-11 h-11 rounded-full border border-white/15 bg-surface/70 backdrop-blur flex items-center justify-center text-muted hover:text-accent3 hover:border-accent3/50 transition-colors" aria-label="Sonido ambiente" title="Sonido ambiente">
+  <i data-lucide="volume-x" class="w-4 h-4"></i>
+</button>
+<audio id="bgm" src="track01.m4a" loop preload="none"></audio>
+
+<script>
+  lucide.createIcons();
+
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- Reveal on scroll ---------- */
+  const io = new IntersectionObserver((entries) => entries.forEach((e) => {
+    if (e.isIntersecting) {
+      e.target.classList.add('in');
+      io.unobserve(e.target);
+      if (e.target.classList.contains('steps')) {
+        e.target.querySelectorAll('li').forEach((li, i) =>
+          setTimeout(() => li.classList.add('lit'), 550 + i * 1100));
+      }
+    }
+  }), { threshold: .15 });
+  document.querySelectorAll('.reveal, .reveal-scale, .steps').forEach((el) => io.observe(el));
+
+  /* ---------- Navbar condense ---------- */
+  const nav = document.getElementById('navbar');
+  addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 30), { passive: true });
+
+  /* ---------- Cursor luminoso ---------- */
+  if (!reduced) {
+    const cur = document.getElementById('cursor');
+    let tx = innerWidth / 2, ty = innerHeight / 3, cx = tx, cy = ty;
+    addEventListener('mousemove', (e) => { tx = e.clientX; ty = e.clientY; }, { passive: true });
+    (function follow() {
+      cx += (tx - cx) * .07; cy += (ty - cy) * .07;
+      cur.style.transform = `translate(${cx - 280}px, ${cy - 280}px)`;
+      requestAnimationFrame(follow);
+    })();
+  }
+
+  /* ---------- Acordeón de servicios ---------- */
+  document.querySelectorAll('.svc-head').forEach((b) => {
+    b.addEventListener('click', () => {
+      const card = b.closest('.svc');
+      const open = card.classList.toggle('open');
+      b.setAttribute('aria-expanded', String(open));
+    });
+  });
+
+  /* ---------- Spotlight en cards ---------- */
+  document.querySelectorAll('.card').forEach((c) => {
+    c.addEventListener('mousemove', (e) => {
+      const r = c.getBoundingClientRect();
+      c.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+      c.style.setProperty('--my', (e.clientY - r.top) + 'px');
+    }, { passive: true });
+  });
+
+  /* ---------- Red de partículas ---------- */
+  const cv = document.getElementById('particles');
+  const ctx = cv.getContext('2d');
+  const N = 72, LINK = 120;
+  let W, H, pts = [];
+
+  function resize() { W = cv.width = cv.offsetWidth; H = cv.height = cv.offsetHeight; }
+  function seed() {
+    pts = Array.from({ length: N }, () => ({
+      x: Math.random() * W, y: Math.random() * H,
+      vx: (Math.random() - .5) * .35, vy: (Math.random() - .5) * .35,
+    }));
+  }
+  function tick() {
+    ctx.clearRect(0, 0, W, H);
+    for (const p of pts) {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0 || p.x > W) p.vx *= -1;
+      if (p.y < 0 || p.y > H) p.vy *= -1;
+      ctx.beginPath(); ctx.arc(p.x, p.y, 1.4, 0, 6.3);
+      ctx.fillStyle = 'rgba(140,170,255,.55)'; ctx.fill();
+    }
+    for (let i = 0; i < N; i++) for (let j = i + 1; j < N; j++) {
+      const a = pts[i], b = pts[j];
+      const d = Math.hypot(a.x - b.x, a.y - b.y);
+      if (d < LINK) {
+        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+        ctx.strokeStyle = `rgba(120,150,255,${(1 - d / LINK) * .22})`; ctx.stroke();
+      }
+    }
+    requestAnimationFrame(tick);
+  }
+  resize(); seed();
+  if (!reduced) { tick(); } else {
+    for (const p of pts) { ctx.beginPath(); ctx.arc(p.x, p.y, 1.4, 0, 6.3); ctx.fillStyle = 'rgba(140,170,255,.4)'; ctx.fill(); }
+  }
+  addEventListener('resize', () => { resize(); seed(); });
+
+  /* ---------- Grafo de relaciones (estilo Obsidian) ---------- */
+  const gc = document.getElementById('graph');
+  if (gc) {
+    const gx = gc.getContext('2d');
+    let GW = 0, GH = 0, hover = -1, drag = -1, gvis = false;
+
+    const gnodes = [
+      { id: 'PIRIA', r: 15, c: '#2dd4ee', big: true },
+      { id: 'Sistemas a la medida', r: 9, c: '#5b8cff', svc: true },
+      { id: 'Automatización', r: 9, c: '#8b5cf6', svc: true },
+      { id: 'IA aplicada', r: 9, c: '#2dd4ee', svc: true },
+      { id: 'Inteligencia de negocios', r: 9, c: '#5b8cff', svc: true },
+      { id: 'Soluciones digitales', r: 9, c: '#8b5cf6', svc: true },
+      { id: 'Evolución continua', r: 9, c: '#2dd4ee', svc: true },
+      { id: 'Sin hojas de cálculo', r: 5, c: '#94a1bd' },
+      { id: 'Flujos autónomos', r: 5, c: '#94a1bd' },
+      { id: 'Datos que responden', r: 5, c: '#94a1bd' },
+      { id: 'Tableros vivos', r: 5, c: '#94a1bd' },
+      { id: 'Canales conectados', r: 5, c: '#94a1bd' },
+      { id: 'Siempre al día', r: 5, c: '#94a1bd' },
+    ];
+    const gedges = [
+      [0,1],[0,2],[0,3],[0,4],[0,5],[0,6],
+      [1,7],[2,8],[3,9],[4,10],[5,11],[6,12],
+      [1,3],[2,4],[3,6],[1,5],[4,6],[2,5],
+    ];
+
+    function gresize() {
+      const d = Math.min(devicePixelRatio || 1, 2);
+      GW = gc.offsetWidth; GH = gc.offsetHeight;
+      gc.width = GW * d; gc.height = GH * d;
+      gx.setTransform(d, 0, 0, d, 0, 0);
+    }
+    function ginit() {
+      const rx = GW * .33, ry = GH * .37;
+      gnodes.forEach((n, i) => {
+        if (i === 0) { n.x = GW / 2; n.y = GH / 2; }
+        else if (i <= 6) {
+          const a = (i - 1) / 6 * Math.PI * 2 - Math.PI / 2;
+          n.ax = Math.min(Math.max(GW / 2 + Math.cos(a) * rx, 70), GW - 70);
+          n.ay = Math.min(Math.max(GH / 2 + Math.sin(a) * ry, 60), GH - 60);
+          n.x = n.ax + (Math.random() - .5) * 40; n.y = n.ay + (Math.random() - .5) * 40;
+        } else {
+          const p = gnodes[i - 6];
+          n.x = p.x + (Math.random() - .5) * 120; n.y = p.y + (Math.random() - .5) * 120;
+        }
+        n.vx = 0; n.vy = 0;
+      });
+    }
+    function restOf(a, b) {
+      if (a <= 6 && b <= 6) return Math.min(GW, GH) * .6;
+      return Math.min(GW, GH) * .28;
+    }
+    function gstep() {
+      for (let i = 0; i < gnodes.length; i++) {
+        const n = gnodes[i];
+        for (let j = 0; j < gnodes.length; j++) {
+          if (i === j) continue;
+          const m = gnodes[j];
+          const dx = n.x - m.x, dy = n.y - m.y;
+          const d = Math.hypot(dx, dy) || .01;
+          const f = Math.min(5600 / (d * d), 1.2);
+          n.vx += (dx / d) * f * .12; n.vy += (dy / d) * f * .12;
+        }
+      }
+      for (const [ai, bi] of gedges) {
+        if (ai === 0) continue; // enlaces al centro: solo visuales
+        const a = gnodes[ai], b = gnodes[bi];
+        const dx = b.x - a.x, dy = b.y - a.y;
+        const d = Math.hypot(dx, dy) || .01;
+        const f = (d - restOf(ai, bi)) * (a.svc && b.svc ? .004 : .012);
+        a.vx += dx / d * f; a.vy += dy / d * f;
+        b.vx -= dx / d * f; b.vy -= dy / d * f;
+      }
+      gnodes.forEach((n, i) => {
+        if (i === drag) { n.vx = n.vy = 0; return; }
+        if (i === 0) { n.x = GW / 2; n.y = GH / 2; n.vx = n.vy = 0; return; }
+        if (n.svc) { n.vx += (n.ax - n.x) * .006; n.vy += (n.ay - n.y) * .006; }
+        else { n.vx += (GW / 2 - n.x) * .001; n.vy += (GH / 2 - n.y) * .001; }
+        n.vx *= .88; n.vy *= .88;
+        n.x += n.vx; n.y += n.vy;
+      });
+    }
+    function linked(i, j) { return gedges.some(([a, b]) => (a === i && b === j) || (a === j && b === i)); }
+    function gdraw() {
+      gx.clearRect(0, 0, GW, GH);
+      for (const [ai, bi] of gedges) {
+        const a = gnodes[ai], b = gnodes[bi];
+        const hot = hover === -1 || hover === ai || hover === bi;
+        gx.beginPath(); gx.moveTo(a.x, a.y); gx.lineTo(b.x, b.y);
+        gx.strokeStyle = hot ? 'rgba(120,150,255,.28)' : 'rgba(120,150,255,.05)';
+        gx.lineWidth = hot && hover !== -1 ? 1.4 : 1;
+        gx.stroke();
+      }
+      gnodes.forEach((n, i) => {
+        const hot = hover === -1 || i === hover || linked(i, hover);
+        gx.save();
+        gx.shadowBlur = n.big ? 30 : (hot ? 18 : 8);
+        gx.shadowColor = n.c;
+        gx.globalAlpha = hot ? 1 : .25;
+        gx.beginPath(); gx.arc(n.x, n.y, n.r, 0, 6.3); gx.fillStyle = n.c; gx.fill();
+        gx.restore();
+        const isLeaf = !n.big && !n.svc;
+        if (!isLeaf || hot) {
+          gx.globalAlpha = isLeaf ? .55 : (hot ? 1 : .35);
+          gx.font = (n.big ? '700 15px' : '600 11px') + ' "Space Grotesk", sans-serif';
+          gx.fillStyle = hot ? '#e9eefb' : '#94a1bd';
+          gx.textAlign = 'center';
+          gx.fillText(n.id, n.x, n.y + n.r + 16);
+          gx.globalAlpha = 1;
+        }
+      });
+    }
+    function gframe() { if (gvis) { gstep(); gdraw(); } requestAnimationFrame(gframe); }
+
+    function gpos(e) { const r = gc.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; }
+    function gpick(x, y) { let f = -1; gnodes.forEach((n, i) => { if (Math.hypot(n.x - x, n.y - y) < n.r + 18) f = i; }); return f; }
+
+    gc.addEventListener('pointerdown', (e) => {
+      const [x, y] = gpos(e);
+      drag = gpick(x, y);
+      if (drag !== -1) {
+        gc.setPointerCapture(e.pointerId);
+        gnodes[drag].vx = gnodes[drag].vy = 0;
+        hover = drag;
+        gc.style.cursor = 'grabbing';
+      }
+    });
+    gc.addEventListener('pointermove', (e) => {
+      const [x, y] = gpos(e);
+      if (drag !== -1) {
+        const n = gnodes[drag];
+        n.x = x; n.y = y; n.vx = n.vy = 0;
+        hover = drag;
+      } else {
+        hover = gpick(x, y);
+        gc.style.cursor = hover !== -1 ? 'grab' : 'default';
+      }
+    }, { passive: true });
+    const gend = () => { drag = -1; gc.style.cursor = hover !== -1 ? 'grab' : 'default'; };
+    gc.addEventListener('pointerup', gend);
+    gc.addEventListener('pointercancel', gend);
+    gc.addEventListener('mouseleave', () => { if (drag === -1) hover = -1; });
+
+    new IntersectionObserver((es) => es.forEach((e) => gvis = e.isIntersecting), { threshold: .05 }).observe(gc);
+
+    gresize(); ginit();
+    if (reduced) { for (let i = 0; i < 400; i++) gstep(); gdraw(); }
+    else gframe();
+    addEventListener('resize', () => { gresize(); ginit(); });
+  }
+
+  /* ---------- Túnel de malla (wormhole) ---------- */
+  const tc = document.getElementById('tunnel');
+  if (tc) {
+    const tx2 = tc.getContext('2d');
+    const RINGS = 20, SPOKES = 22;
+    const LINES_C = [
+      'const sol = resolver(datos)',
+      'if (caos) ordenar(proceso)',
+      'map(d => d.significa())',
+      'return insight;',
+      'SELECT * FROM operaciones',
+      'await piria.analizar(x)',
+      'x = argmin f(θ)',
+      'ia.aprender(historial)',
+      'const claro = orden(caos)',
+      'fetch("/v1/predicciones")',
+      'datos.filter(d => d.valido)',
+      'reduce((a, b) => a + b)',
+      'modelo.fit(X, y)',
+      'JSON.stringify(result)',
+      'pipeline.transform(input)',
+      'tensor.reshape(128, -1)',
+      'try { ejecutar() }',
+      'log("proceso ok")',
+      'for (const nodo of red)',
+    ];
+    const LINES_Y = [
+      'E = mc²',
+      'H(X) = -Σ p·log p',
+      '∂L/∂θ → 0',
+      'P(A|B) = P(B|A)·P(A)/P(B)',
+      'y = Σ xᵢ·wᵢ + b',
+      'f(x) = Σ aₙ·eⁱⁿˣ',
+      'λ → estabilidad',
+      'Δt → 0  ⇒  dx/dt',
+      'e^(iπ) + 1 = 0',
+      'σ(x) = 1/(1 + e^-x)',
+      'x̄ = Σxᵢ/n',
+      'z = (x - μ)/σ',
+      'cos²θ + sin²θ = 1',
+      '∫ f(x) dx = F(b) - F(a)',
+      '∇·E = ρ/ε₀',
+      'a² + b² = c²',
+      'φ = (1 + √5)/2',
+      'n! = n·(n-1)!',
+      'O(n log n)',
+      'det(A) ≠ 0',
+      'T = 2π√(L/g)',
+      'Q = CV²/2',
+      'ψ(x,t) = A·e^(i(kx-ωt))',
+      'S = k·ln Ω',
+    ];
+    const FRAGS_C = '01{}[]<>/=#$;:*%+_-'.split('');
+    const FRAGS_Y = 'λΣ∆πΩ∂∞√Φ±∫≈∇·'.split('');
+    function spawnWave(y) {
+      const S = (y ? LINES_Y : LINES_C).slice().sort(() => Math.random() - .5);
+      const F = y ? FRAGS_Y : FRAGS_C;
+      const n = y ? 8 : 5;
+      for (let i = 0; i < n; i++) {
+        const z = y && i >= 4 ? 4.9 + (i - 4) * .18 : 3.1 + i * .18;
+        // 3 líneas únicas esparcidas por toda la lámina
+        const g = S.slice(i * 3, i * 3 + 3).map((t) => ({
+          t, u: Math.random() * 1.5 - .75, v: Math.random() * 1.6 - .8,
+        }));
+        // fragmentos pequeños rellenando la superficie
+        for (let k = 0; k < 8; k++)
+          g.push({ t: F[(Math.random() * F.length) | 0], u: Math.random() * 1.85 - .92, v: Math.random() * 1.85 - .92, s: .7 });
+        pulses.push({ z, y, g });
+      }
+    }
+    let TW = 0, TH = 0, vpx = 0, vpy = 0, tmx = 0, tmy = 0, tvis = false, rings = [], pulses = [], nextPulse = 0, waveCount = 0, nextYellow = 5 + Math.floor(Math.random() * 3);
+
+    function tresize() {
+      const d = Math.min(devicePixelRatio || 1, 2);
+      TW = tc.offsetWidth; TH = tc.offsetHeight;
+      tc.width = TW * d; tc.height = TH * d;
+      tx2.setTransform(d, 0, 0, d, 0, 0);
+      vpx = tmx = TW / 2; vpy = tmy = TH * .42;
+      rings = Array.from({ length: RINGS }, (_, i) => ({ z: .22 + (i / RINGS) * 4.2 }));
+    }
+    function tstep() {
+      const t = performance.now() * .001;
+      const wx = Math.sin(t * .16) * TW * .18;
+      const wy = Math.cos(t * .11) * TH * .12;
+      vpx += (tmx + wx - vpx) * .04;
+      vpy += (tmy + wy - vpy) * .04;
+      for (const r of rings) { r.z -= .0045; if (r.z <= .22) r.z += 4.2; }
+      const now = performance.now();
+      if (pulses.length === 0 && now > nextPulse) {
+        waveCount++;
+        if (waveCount >= nextYellow) {
+          // doble ráfaga amarilla, más rápida — intervalo impredecible
+          waveCount = 0;
+          nextYellow = 5 + Math.floor(Math.random() * 3);
+          spawnWave(true);
+        } else {
+          spawnWave(false);
+        }
+        nextPulse = now + 3500 + Math.random() * 3500;
+      }
+      for (const p of pulses) p.z -= p.y ? .095 : .055;
+      pulses = pulses.filter((p) => p.z > .18);
+    }
+    function tdraw() {
+      tx2.clearRect(0, 0, TW, TH);
+      const RAD = Math.hypot(TW, TH);
+      const swirlT = performance.now() * .00008;
+      // radios en espiral
+      for (let s = 0; s < SPOKES; s++) {
+        const a0 = (s / SPOKES) * Math.PI * 2 + swirlT * 1.6;
+        tx2.beginPath();
+        for (let k = 0; k <= 10; k++) {
+          const f = k / 10;
+          const a = a0 + f * .3;
+          const x = vpx + Math.cos(a) * f * RAD, y = vpy + Math.sin(a) * f * RAD;
+          if (k) tx2.lineTo(x, y); else tx2.moveTo(x, y);
+        }
+        tx2.strokeStyle = 'rgba(120,150,255,.07)';
+        tx2.stroke();
+      }
+      const KX = TW * .55, KY = TH * .55;
+      for (const r of rings) {
+        const hw = KX / r.z, hh = KY / r.z;
+        if (hw > RAD) continue;
+        const al = .42 * (1 - r.z / 4.8);
+        const rot = swirlT * 2 + r.z * .09; // torsión sutil por profundidad
+        tx2.save();
+        tx2.translate(vpx, vpy);
+        tx2.rotate(rot);
+        // halo difuso
+        tx2.lineWidth = 3.5;
+        tx2.strokeStyle = `rgba(91,140,255,${al * .35})`;
+        tx2.strokeRect(-hw, -hh, hw * 2, hh * 2);
+        // núcleo brillante
+        tx2.lineWidth = 1.2;
+        tx2.strokeStyle = `rgba(170,200,255,${al})`;
+        tx2.strokeRect(-hw, -hh, hw * 2, hh * 2);
+        tx2.restore();
+      }
+      // ráfagas de energía hacia el espectador
+      for (const p of pulses) {
+        const hw = KX / p.z, hh = KY / p.z;
+        if (hw > RAD) continue;
+        const al = Math.max(0, .85 * (1 - p.z / 4.6)) * Math.min(1, p.z / .4);
+        const halo = p.y ? '250,204,80' : '45,212,238';
+        const core = p.y ? '255,244,214' : '225,245,255';
+        const prot = swirlT * 2 + p.z * .09;
+        tx2.save();
+        tx2.translate(vpx, vpy);
+        tx2.rotate(prot);
+        tx2.lineWidth = 6;
+        tx2.strokeStyle = `rgba(${halo},${al * .3})`;
+        tx2.strokeRect(-hw, -hh, hw * 2, hh * 2);
+        tx2.lineWidth = 1.6;
+        tx2.strokeStyle = `rgba(${core},${al})`;
+        tx2.strokeRect(-hw, -hh, hw * 2, hh * 2);
+        // velo de luz con líneas de código / fórmulas
+        tx2.fillStyle = `rgba(${halo},${al * .045})`;
+        tx2.fillRect(-hw, -hh, hw * 2, hh * 2);
+        if (hw > 40 && p.g) {
+          const fs = Math.min(16, Math.max(9, hw * .055));
+          tx2.font = fs + 'px "Space Grotesk", monospace';
+          tx2.textAlign = 'center'; tx2.textBaseline = 'middle';
+          tx2.fillStyle = `rgba(${core},${al * .65})`;
+          for (const g of p.g) {
+            if (g.s) tx2.font = fs * g.s + 'px "Space Grotesk", monospace';
+            tx2.fillText(g.t, hw * g.u, hh * g.v);
+            if (g.s) tx2.font = fs + 'px "Space Grotesk", monospace';
+          }
+        }
+        tx2.restore();
+      }
+      tx2.lineWidth = 1;
+    }
+    function tframe() { if (tvis) { tstep(); tdraw(); } requestAnimationFrame(tframe); }
+    addEventListener('mousemove', (e) => {
+      const r = tc.getBoundingClientRect();
+      tmx = TW / 2 + (e.clientX - (r.left + r.width / 2)) * .12;
+      tmy = TH * .42 + (e.clientY - (r.top + r.height * .42)) * .08;
+    }, { passive: true });
+    new IntersectionObserver((es) => es.forEach((e) => tvis = e.isIntersecting), { threshold: .02 }).observe(tc);
+    tresize();
+    if (reduced) tdraw(); else tframe();
+    addEventListener('resize', tresize);
+  }
+
+  /* ---------- Motor visual: caos → orden ---------- */
+  const mc = document.getElementById('morph');
+  if (mc) {
+    const mx2 = mc.getContext('2d');
+    const WORDS = ['COMPLEJIDAD', 'CLARIDAD', 'MANUAL', 'AUTOMÁTICO', 'DISPERSO', 'DATOS', 'DUDAS', 'INTELIGENCIA'];
+    const F = 1300, H = 2400, S = 1100, T = F + H + S;
+    let MW = 0, MH = 0, mpts = [], mvis = false, wi = 0, wstart = performance.now();
+
+    function mresize() {
+      const d = Math.min(devicePixelRatio || 1, 2);
+      MW = mc.offsetWidth; MH = mc.offsetHeight;
+      mc.width = MW * d; mc.height = MH * d;
+      mx2.setTransform(d, 0, 0, d, 0, 0);
+      buildTargets();
+    }
+    function buildTargets() {
+      const word = WORDS[wi];
+      const oc = document.createElement('canvas');
+      oc.width = MW; oc.height = MH;
+      const o = oc.getContext('2d');
+      const fs = Math.min(MW / (word.length * .62), MH / 2.2);
+      o.font = '700 ' + fs + 'px "Space Grotesk", sans-serif';
+      o.textAlign = 'center'; o.textBaseline = 'middle';
+      o.fillStyle = '#fff';
+      o.fillText(word, MW / 2, MH * .44);
+      const img = o.getImageData(0, 0, MW, MH).data;
+      const targets = [];
+      const st = Math.max(3, Math.round(MW / 240));
+      for (let y = 0; y < MH; y += st) for (let x = 0; x < MW; x += st)
+        if (img[(y * MW + x) * 4 + 3] > 128) targets.push({ x, y });
+      if (!targets.length) return;
+      if (!mpts.length)
+        mpts = targets.map((t) => ({ t, x: Math.random() * MW, y: Math.random() * MH, vx: 0, vy: 0 }));
+      else if (targets.length >= mpts.length)
+        mpts.forEach((p, i) => { p.t = targets[Math.floor(i * targets.length / mpts.length)]; });
+      else
+        mpts.forEach((p, i) => { p.t = targets[i % targets.length]; });
+    }
+    function morder() {
+      const el = performance.now() - wstart;
+      if (el >= T) { wi = (wi + 1) % WORDS.length; wstart = performance.now(); buildTargets(); return 0; }
+      if (el < F) return el / F;
+      if (el < F + H) return 1;
+      return 1 - (el - F - H) / S;
+    }
+    function mstep(order) {
+      const chaos = 1 - order;
+      for (const p of mpts) {
+        p.vx += (Math.random() - .5) * .4 * chaos + (p.t.x - p.x) * .05 * order;
+        p.vy += (Math.random() - .5) * .4 * chaos + (p.t.y - p.y) * .05 * order;
+        const damp = .9 - order * .14;
+        p.vx *= damp; p.vy *= damp;
+        p.x += p.vx; p.y += p.vy;
+        if (order < .4) {
+          if (p.x < 0) p.x += MW; if (p.x > MW) p.x -= MW;
+          if (p.y < 0) p.y += MH; if (p.y > MH) p.y -= MH;
+        }
+      }
+    }
+    function mdraw(order) {
+      mx2.clearRect(0, 0, MW, MH);
+      const col = wi % 2 === 0 ? '140,170,255' : '45,212,238';
+      if (order > .55) {
+        mx2.lineWidth = 1;
+        mx2.strokeStyle = `rgba(${col},${(order - .55) * .5})`;
+        mx2.beginPath();
+        for (let i = 0; i < mpts.length - 1; i++) {
+          const a = mpts[i], b = mpts[i + 1];
+          if (Math.abs(a.t.x - b.t.x) < 8 && Math.abs(a.t.y - b.t.y) < 8) {
+            mx2.moveTo(a.x, a.y); mx2.lineTo(b.x, b.y);
+          }
+        }
+        mx2.stroke();
+      }
+      for (const p of mpts) {
+        const al = .3 + order * .6;
+        mx2.beginPath(); mx2.arc(p.x, p.y, 1.5, 0, 6.3);
+        mx2.fillStyle = order > .5 ? `rgba(${col},${al})` : `rgba(140,170,255,${al})`;
+        mx2.fill();
+      }
+    }
+    function mframe() {
+      if (mvis) {
+        const order = reduced ? 1 : morder();
+        if (!reduced) mstep(order);
+        mdraw(order);
+      }
+      requestAnimationFrame(mframe);
+    }
+    new IntersectionObserver((es) => es.forEach((e) => mvis = e.isIntersecting), { threshold: .1 }).observe(mc);
+    mresize();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(buildTargets);
+    mframe();
+    addEventListener('resize', mresize);
+  }
+
+  /* ---------- Sonido ambiente ---------- */
+  const bgm = document.getElementById('bgm'), sndBtn = document.getElementById('sound');
+  if (bgm && sndBtn) {
+    let on = false;
+    const setIcon = (n) => { sndBtn.innerHTML = `<i data-lucide="${n}" class="w-4 h-4"></i>`; lucide.createIcons(); };
+    sndBtn.addEventListener('click', async () => {
+      if (!on) {
+        try { bgm.volume = 0; await bgm.play(); } catch (e) { return; }
+        on = true; setIcon('volume-2');
+        const iv = setInterval(() => { bgm.volume = Math.min(.35, bgm.volume + .02); if (bgm.volume >= .35) clearInterval(iv); }, 60);
+      } else {
+        on = false; setIcon('volume-x');
+        const iv = setInterval(() => { bgm.volume = Math.max(0, bgm.volume - .03); if (bgm.volume <= 0) { bgm.pause(); clearInterval(iv); } }, 60);
+      }
+    });
+  }
+</script>
+</body>
+</html>
