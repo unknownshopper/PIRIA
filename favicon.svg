@@ -1,19 +1,29 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1" gradientTransform="rotate(0 32 32)">
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#5b8cff">
-        <animate attributeName="stop-color" values="#5b8cff;#00e5ff;#8b5cf6;#5b8cff" dur="3s" repeatCount="indefinite" />
+        <animate attributeName="stop-color" values="#5b8cff;#00e5ff;#ff2d95;#5b8cff" dur="2.2s" repeatCount="indefinite" />
       </stop>
       <stop offset="100%" stop-color="#8b5cf6">
-        <animate attributeName="stop-color" values="#8b5cf6;#5b8cff;#00e5ff;#8b5cf6" dur="3s" repeatCount="indefinite" />
+        <animate attributeName="stop-color" values="#8b5cf6;#ff2d95;#00e5ff;#8b5cf6" dur="2.2s" repeatCount="indefinite" />
       </stop>
-      <animateTransform attributeName="gradientTransform" type="rotate" from="0 32 32" to="360 32 32" dur="4s" repeatCount="indefinite" />
     </linearGradient>
     <filter id="gl" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur in="SourceGraphic" stdDeviation="4" />
+      <feGaussianBlur in="SourceGraphic" stdDeviation="5" />
     </filter>
+    <clipPath id="dotClip">
+      <circle cx="32" cy="32" r="18" />
+    </clipPath>
   </defs>
   <rect width="64" height="64" rx="14" fill="#04060e" />
   <circle cx="32" cy="32" r="18" fill="url(#g)" />
-  <circle cx="32" cy="32" r="18" fill="url(#g)" filter="url(#gl)" opacity=".45" />
+  <circle cx="32" cy="32" r="18" fill="url(#g)" filter="url(#gl)" opacity=".45">
+    <animate attributeName="opacity" values=".45;.9;.45" dur="1.6s" repeatCount="indefinite" />
+    <animate attributeName="r" values="18;20;18" dur="1.6s" repeatCount="indefinite" />
+  </circle>
+  <g clip-path="url(#dotClip)">
+    <circle cx="32" cy="20" r="4" fill="white" opacity=".95">
+      <animateTransform attributeName="transform" type="rotate" from="0 32 32" to="360 32 32" dur="2s" repeatCount="indefinite" />
+    </circle>
+  </g>
 </svg>
