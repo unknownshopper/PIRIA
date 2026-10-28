@@ -1,0 +1,12 @@
+/* TEAM */
+    PIRIA — Plataforma de Investigación y Razonamiento mediante Inteligencia Artificial
+    Site: https://unknownshopper.github.io/PIRIA/
+
+/* THANKS */
+    The open web
+
+/* SITE */
+    Last update: 2026-10-28
+    Language: Spanish
+    Doctype: HTML5
+    IDE: Cursor
