@@ -1380,6 +1380,13 @@
     start(); // por si el navegador ya permite audio con sonido
     addEventListener('pointerdown', () => start(), { once: true });
     addEventListener('keydown', () => start(), { once: true });
+    // pausa al salir de la app/pestaña; reanuda solo si el usuario lo tenía activado
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) { bgm.pause(); }
+      else if (on) { bgm.play().catch(() => {}); }
+    });
+    addEventListener('pagehide', () => { bgm.pause(); });
+    addEventListener('pageshow', (e) => { if (e.persisted && on) bgm.play().catch(() => {}); });
   }
 
   /* ---------- Nav móvil: visible solo tras el hero ---------- */
