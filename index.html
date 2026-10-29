@@ -690,6 +690,36 @@
   </div>
 </section>
 
+<!-- FAQ -->
+<section id="faq" class="py-24 border-t border-white/5">
+  <div class="max-w-3xl mx-auto px-6">
+    <p class="text-xs tracking-[.25em] uppercase text-accent font-medium text-center">Preguntas frecuentes</p>
+    <h2 class="font-display text-2xl md:text-3xl font-bold mt-2 text-center text-white mb-10">Dudas comunes</h2>
+    <div class="space-y-4">
+      <details class="rounded-xl border border-white/10 bg-white/[.03] p-4">
+        <summary class="cursor-pointer font-medium text-white">¿Trabajan con cualquier tipo de negocio?</summary>
+        <p class="text-muted text-sm mt-3">Sí. Diseñamos software a la medida para empresas, instituciones, gobierno, ONG y startups. El punto de partida siempre es entender tu operación real.</p>
+      </details>
+      <details class="rounded-xl border border-white/10 bg-white/[.03] p-4">
+        <summary class="cursor-pointer font-medium text-white">¿Cuánto tarda un proyecto?</summary>
+        <p class="text-muted text-sm mt-3">Depende del alcance: automatizaciones puntuales pueden ser semanas, sistemas grandes se entregan por etapas desde el primer mes. Te damos estimado real en la llamada.</p>
+      </details>
+      <details class="rounded-xl border border-white/10 bg-white/[.03] p-4">
+        <summary class="cursor-pointer font-medium text-white">¿Necesito saber de tecnología para usar el sistema?</summary>
+        <p class="text-muted text-sm mt-3">No. Diseñamos para que tu equipo lo use sin fricción, con capacitación y sin tecnicismos.</p>
+      </details>
+      <details class="rounded-xl border border-white/10 bg-white/[.03] p-4">
+        <summary class="cursor-pointer font-medium text-white">¿Qué pasa después de la entrega?</summary>
+        <p class="text-muted text-sm mt-3">La entrega no es el final. Incluimos mejora continua, soporte y ajustes mientras tu operación crece.</p>
+      </details>
+      <details class="rounded-xl border border-white/10 bg-white/[.03] p-4">
+        <summary class="cursor-pointer font-medium text-white">¿Pueden conectar con sistemas que ya tengo?</summary>
+        <p class="text-muted text-sm mt-3">Sí. Hacemos integraciones, APIs y ETL para que lo nuevo hable con lo que ya usas.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
 <!-- FOOTER -->
 <footer class="border-t border-white/5 py-10">
   <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
@@ -1644,5 +1674,26 @@
     document.getElementById('chat-close').addEventListener('click', () => { chatBox.classList.add('hidden'); chatBox.classList.remove('flex'); });
   }
 </script>
+
+<!-- Cookie banner -->
+<div id="cookie-banner" class="fixed bottom-0 inset-x-0 z-50 bg-[#04060e] border-t border-white/10 p-4 hidden">
+  <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+    <p class="text-sm text-muted">Este sitio no usa cookies de seguimiento. Al continuar, aceptas nuestro <a href="aviso.html" class="text-accent hover:underline">Aviso</a> de privacidad.</p>
+    <div class="flex gap-2">
+      <button id="cookie-accept" class="btn-primary text-sm px-4 py-2 rounded-lg">Aceptar</button>
+      <button id="cookie-close" class="text-sm text-muted hover:text-white px-4 py-2">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const banner = document.getElementById('cookie-banner');
+  const accept = document.getElementById('cookie-accept');
+  const close = document.getElementById('cookie-close');
+  if (banner && !localStorage.getItem('pira_cookies')) banner.classList.remove('hidden');
+  if (accept) accept.addEventListener('click', () => { localStorage.setItem('pira_cookies','ok'); banner.classList.add('hidden'); });
+  if (close) close.addEventListener('click', () => { banner.classList.add('hidden'); });
+</script>
+
 </body>
 </html>
