@@ -1675,24 +1675,39 @@
   }
 </script>
 
-<!-- Cookie banner -->
-<div id="cookie-banner" class="fixed bottom-0 inset-x-0 z-50 bg-[#04060e] border-t border-white/10 p-4 hidden">
-  <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-    <p class="text-sm text-muted">Este sitio no usa cookies de seguimiento. Al continuar, aceptas nuestro <a href="aviso.html" class="text-accent hover:underline">Aviso</a> de privacidad.</p>
-    <div class="flex gap-2">
-      <button id="cookie-accept" class="btn-primary text-sm px-4 py-2 rounded-lg">Aceptar</button>
-      <button id="cookie-close" class="text-sm text-muted hover:text-white px-4 py-2">Cerrar</button>
+<!-- Cookie gate — decide antes de entrar -->
+<div id="cookie-gate" class="fixed inset-0 z-[100] hidden items-center justify-center p-6 bg-[#04060e]/95 backdrop-blur-md transition-opacity duration-500 opacity-0">
+  <div class="max-w-md w-full rounded-2xl border border-white/10 bg-surface/90 p-8 text-center shadow-[0_24px_80px_-20px_rgba(0,0,0,.9)]">
+    <span class="inline-flex w-3 h-3 rounded-full bg-gradient-to-br from-accent to-accent2 shadow-[0_0_14px_2px_rgba(91,140,255,.8)]"></span>
+    <h2 class="font-display text-xl font-bold text-white mt-4">Una cosa antes de entrar</h2>
+    <p class="text-sm text-muted mt-3 leading-relaxed">Usamos cookies mínimas para mejorar tu experiencia. Elige y entras directo a <b class="text-white">PIRIA</b>. Más info en el <a href="aviso.html" class="text-accent hover:underline">Aviso</a>.</p>
+    <div class="flex flex-col sm:flex-row gap-3 mt-6">
+      <button id="cookie-accept" class="btn-primary flex-1 py-3 text-sm font-medium text-white rounded-lg">Aceptar cookies</button>
+      <button id="cookie-reject" class="flex-1 py-3 text-sm font-medium text-muted hover:text-white border border-white/15 rounded-lg transition-colors">Rechazar</button>
     </div>
   </div>
 </div>
 
 <script>
-  const banner = document.getElementById('cookie-banner');
-  const accept = document.getElementById('cookie-accept');
-  const close = document.getElementById('cookie-close');
-  if (banner && !localStorage.getItem('pira_cookies')) banner.classList.remove('hidden');
-  if (accept) accept.addEventListener('click', () => { localStorage.setItem('pira_cookies','ok'); banner.classList.add('hidden'); });
-  if (close) close.addEventListener('click', () => { banner.classList.add('hidden'); });
+  (function () {
+    const gate = document.getElementById('cookie-gate');
+    if (!gate) return;
+    const done = (v) => {
+      localStorage.setItem('pira_cookies', v);
+      gate.classList.add('opacity-0');
+      document.body.style.overflow = '';
+      setTimeout(() => { gate.classList.add('hidden'); }, 500);
+    };
+    if (!localStorage.getItem('pira_cookies')) {
+      gate.classList.remove('hidden'); gate.classList.add('flex');
+      requestAnimationFrame(() => { requestAnimationFrame(() => gate.classList.remove('opacity-0')); });
+      document.body.style.overflow = 'hidden';
+    } else {
+      gate.classList.add('hidden');
+    }
+    document.getElementById('cookie-accept').addEventListener('click', () => done('ok'));
+    document.getElementById('cookie-reject').addEventListener('click', () => done('no'));
+  })();
 </script>
 
 </body>
