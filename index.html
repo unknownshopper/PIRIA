@@ -1032,6 +1032,27 @@
       [1,3],[2,4],[3,6],[1,5],[4,6],[2,5],
     ];
 
+    /* Paquetes de info: recorren las ramas una a la vez */
+    const routes = [];
+    for (let i = 1; i <= 6; i++) routes.push([0, i, i + 6]);
+    [[1,3],[2,4],[3,6],[1,5],[4,6],[2,5]].forEach(([a, b]) => routes.push([0, a, b]));
+    let pk = null, pkWait = 40, rIdx = 0;
+    function pkStep() {
+      if (!pk) {
+        if (--pkWait <= 0) {
+          rIdx = (rIdx + 1 + Math.floor(Math.random() * (routes.length - 1))) % routes.length;
+          pk = { route: routes[rIdx], seg: 0, t: 0 };
+        }
+        return;
+      }
+      pk.t += .016;
+      if (pk.t >= 1) {
+        gnodes[pk.route[++pk.seg]].flash = 1;
+        pk.t = 0;
+        if (pk.seg >= pk.route.length - 1) { pk = null; pkWait = 55 + Math.random() * 40; }
+      }
+    }
+
     function gresize() {
       const d = Math.min(devicePixelRatio || 1, 2);
       GW = gc.offsetWidth; GH = gc.offsetHeight;
@@ -1094,18 +1115,38 @@
       for (const [ai, bi] of gedges) {
         const a = gnodes[ai], b = gnodes[bi];
         const hot = hover === -1 || hover === ai || hover === bi;
+        const pkEdge = pk && ((ai === pk.route[pk.seg] && bi === pk.route[pk.seg + 1]) || (ai === pk.route[pk.seg + 1] && bi === pk.route[pk.seg]));
         gx.beginPath(); gx.moveTo(a.x, a.y); gx.lineTo(b.x, b.y);
-        gx.strokeStyle = hot ? 'rgba(120,150,255,.28)' : 'rgba(120,150,255,.05)';
-        gx.lineWidth = hot && hover !== -1 ? 1.4 : 1;
+        gx.strokeStyle = pkEdge ? 'rgba(45,212,238,.8)' : hot ? 'rgba(120,150,255,.28)' : 'rgba(120,150,255,.05)';
+        gx.lineWidth = pkEdge ? 2 : (hot && hover !== -1 ? 1.4 : 1);
         gx.stroke();
       }
+      if (pk) {
+        const a = gnodes[pk.route[pk.seg]], b = gnodes[pk.route[pk.seg + 1]];
+        const ez = (t) => t * t * (3 - 2 * t);
+        const px = a.x + (b.x - a.x) * ez(pk.t), py = a.y + (b.y - a.y) * ez(pk.t);
+        const tb = Math.max(0, pk.t - .16);
+        gx.save();
+        gx.lineCap = 'round';
+        gx.shadowBlur = 10; gx.shadowColor = '#2dd4ee';
+        gx.strokeStyle = 'rgba(45,212,238,.55)'; gx.lineWidth = 2.4;
+        gx.beginPath();
+        gx.moveTo(a.x + (b.x - a.x) * ez(tb), a.y + (b.y - a.y) * ez(tb));
+        gx.lineTo(px, py);
+        gx.stroke();
+        gx.shadowBlur = 18;
+        gx.beginPath(); gx.arc(px, py, 3.6, 0, 6.3); gx.fillStyle = '#c5f9ff'; gx.fill();
+        gx.restore();
+      }
       gnodes.forEach((n, i) => {
+        const fl = n.flash || 0;
+        n.flash = fl > .02 ? fl * .9 : 0;
         const hot = hover === -1 || i === hover || linked(i, hover);
         gx.save();
-        gx.shadowBlur = n.big ? 30 : (hot ? 18 : 8);
+        gx.shadowBlur = (n.big ? 30 : (hot ? 18 : 8)) + fl * 26;
         gx.shadowColor = n.c;
         gx.globalAlpha = hot ? 1 : .25;
-        gx.beginPath(); gx.arc(n.x, n.y, n.r, 0, 6.3); gx.fillStyle = n.c; gx.fill();
+        gx.beginPath(); gx.arc(n.x, n.y, n.r + fl * 3, 0, 6.3); gx.fillStyle = n.c; gx.fill();
         gx.restore();
         const isLeaf = !n.big && !n.svc;
         if (!isLeaf || hot) {
@@ -1118,7 +1159,7 @@
         }
       });
     }
-    function gframe() { if (gvis) { gstep(); gdraw(); } requestAnimationFrame(gframe); }
+    function gframe() { if (gvis) { gstep(); pkStep(); gdraw(); } requestAnimationFrame(gframe); }
 
     function gpos(e) { const r = gc.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; }
     function gpick(x, y) { let f = -1; gnodes.forEach((n, i) => { if (Math.hypot(n.x - x, n.y - y) < n.r + 18) f = i; }); return f; }
