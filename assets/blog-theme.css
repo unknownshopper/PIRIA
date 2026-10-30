@@ -1,0 +1,68 @@
+html { scroll-behavior: smooth; }
+body { background: #04060e; color: #e9eefb; font-family: 'Inter', system-ui, sans-serif; overflow-x: hidden; }
+.font-display { font-family: 'Space Grotesk', system-ui, sans-serif; }
+.grad-text {
+  background: linear-gradient(100deg, #5b8cff 0%, #8b5cf6 45%, #2dd4ee 100%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: shimmer 7s ease-in-out infinite alternate;
+}
+@keyframes shimmer { to { background-position: 100% 0; } }
+.aurora { position: absolute; border-radius: 50%; filter: blur(110px); mix-blend-mode: screen; pointer-events: none; will-change: transform; }
+@keyframes drift-a { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(60px,-40px) scale(1.15); } }
+@keyframes drift-b { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-70px,50px) scale(1.1); } }
+@keyframes drift-c { 0%,100% { transform: translate(0,0); } 50% { transform: translate(40px,60px) scale(.9); } }
+.bg-grid {
+  background-image:
+    linear-gradient(rgba(120,150,255,.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(120,150,255,.07) 1px, transparent 1px);
+  background-size: 54px 54px;
+  -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 25%, transparent 78%);
+          mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 25%, transparent 78%);
+}
+.grain {
+  position: fixed; inset: 0; z-index: 70; pointer-events: none; opacity: .05; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.card {
+  position: relative; overflow: hidden;
+  background: linear-gradient(165deg, #0c1326 0%, #080d1a 100%);
+  border: 1px solid rgba(120,150,255,.14);
+  transition: transform .4s cubic-bezier(.22,1,.36,1), border-color .4s, box-shadow .4s;
+}
+.card::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(340px circle at var(--mx, 50%) var(--my, 50%), rgba(91,140,255,.17), transparent 65%);
+  opacity: 0; transition: opacity .45s;
+}
+.card:hover::before { opacity: 1; }
+.card:hover { transform: translateY(-6px); border-color: rgba(91,140,255,.55); box-shadow: 0 30px 60px -30px rgba(91,140,255,.35); }
+.card > * { position: relative; }
+.card::after {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent 5%, rgba(45,212,238,.7) 50%, transparent 95%);
+  opacity: .45; transition: opacity .4s;
+}
+.card:hover::after { opacity: 1; box-shadow: 0 0 14px 1px rgba(45,212,238,.8); }
+.btn-primary {
+  position: relative; overflow: hidden; border-radius: 9999px;
+  background: linear-gradient(95deg, rgba(91,140,255,.95), rgba(139,92,246,.95));
+  border: 1px solid rgba(150,180,255,.45);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.25), 0 10px 34px -10px rgba(91,140,255,.7);
+  transition: transform .3s, box-shadow .4s;
+}
+.btn-primary::after {
+  content: ''; position: absolute; top: 0; left: -80%; width: 55%; height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,.45), transparent);
+  transform: skewX(-20deg); transition: left .65s ease;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 16px 44px -10px rgba(45,212,238,.65); }
+.btn-primary:hover::after { left: 140%; }
+main h1, main h2, main h3 { font-family: 'Space Grotesk', system-ui, sans-serif; letter-spacing: -.02em; }
+main h1 {
+  background: linear-gradient(100deg, #fff 20%, #5b8cff 55%, #2dd4ee 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+main a { color: #2dd4ee; }
+@keyframes fade-up { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
+main > * { animation: fade-up .7s cubic-bezier(.22,1,.36,1) both; }

@@ -27,24 +27,43 @@
         colors: {
           ink: '#04060e',
           surface: '#080d1a',
+          card: '#0c1326',
           accent: '#5b8cff',
           accent2: '#8b5cf6',
           accent3: '#2dd4ee',
-          muted: '#8b93a7'
+          muted: '#94a1bd'
+        },
+        fontFamily: {
+          display: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
+          body: ['"Inter"', 'system-ui', 'sans-serif'],
         }
       }
     }
   }
 </script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../assets/blog-theme.css" />
 </head>
-<body class="bg-[#04060e] text-slate-300 font-sans leading-relaxed">
-  <header class="border-b border-white/5 py-6">
-    <div class="max-w-4xl mx-auto px-6 flex items-center justify-between">
-      <a href="../index.html" class="font-bold text-white text-xl tracking-tight">PIRIA</a>
-      <a href="../index.html#contacto" class="text-sm text-accent hover:text-accent2 transition-colors">Contacto</a>
-    </div>
+<body class="leading-relaxed">
+  <div class="grain" aria-hidden="true"></div>
+  <div class="fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">
+    <div class="bg-grid absolute inset-0"></div>
+    <div class="aurora w-[420px] h-[420px] bg-accent/45 -top-32 -left-32" style="animation:drift-a 15s ease-in-out infinite"></div>
+    <div class="aurora w-[360px] h-[360px] bg-accent2/35 top-1/3 -right-36" style="animation:drift-b 19s ease-in-out infinite"></div>
+    <div class="aurora w-[300px] h-[300px] bg-accent3/25 bottom-0 left-1/3" style="animation:drift-c 22s ease-in-out infinite"></div>
+  </div>
+  <header class="fixed top-0 inset-x-0 z-50 backdrop-blur-md bg-ink/60 border-b border-white/5">
+    <nav class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+      <a href="../index.html" class="font-display font-bold text-xl tracking-tight flex items-center gap-2.5">
+        <span class="w-2.5 h-2.5 rounded-full bg-gradient-to-br from-accent to-accent2 shadow-[0_0_14px_2px_rgba(91,140,255,.8)]"></span>
+        <span class="grad-text">PIRIA</span>
+      </a>
+      <a href="../index.html#contacto" class="btn-primary px-5 py-2 text-sm font-medium text-white">Contacto</a>
+    </nav>
   </header>
-  <main class="max-w-4xl mx-auto px-6 py-12">
+  <main class="relative max-w-4xl mx-auto px-6 pt-28 pb-16">
     <span class="text-xs text-accent3 uppercase tracking-widest">SEO y marketing · 30 de octubre de 2026</span>
     <h1 class="text-3xl md:text-4xl font-bold text-white mt-3 mb-8">Google Business Profile: la ficha gratis que te da clientes locales</h1>
 
@@ -81,10 +100,10 @@
     <h2 class="text-xl font-semibold text-white mt-10 mb-4">El error más común</h2>
     <p class="mb-6">Crear la ficha y abandonarla. Una ficha sin fotos, sin servicios, sin reseñas y sin actividad es casi tan mala como no tenerla. <b class="text-white">El negocio que mantiene su ficha gana contra el que solo la creó.</b></p>
 
-    <div class="mt-12 rounded-2xl border border-white/10 bg-surface p-8 text-center">
+    <div class="mt-12 card rounded-2xl p-8 text-center">
       <h2 class="text-xl font-bold text-white mb-3">¿Tu ficha de Google ya trabaja por ti?</h2>
       <p class="text-muted mb-6">En PIRIA creamos presencias digitales que sí atraen clientes: sitio web, ficha de negocio y sistemas que convierten visitas en ventas. La llamada de exploración es gratuita.</p>
-      <a href="../index.html#contacto" class="inline-block bg-accent hover:bg-accent2 text-white font-medium px-8 py-3 rounded-lg transition-colors">Platicar con PIRIA</a>
+      <a href="../index.html#contacto" class="btn-primary inline-block text-white font-medium px-8 py-3">Platicar con PIRIA</a>
     </div>
 
     <p class="mt-10 text-sm"><a href="../blog.html" class="text-accent hover:text-accent2 transition-colors">← Más artículos</a> · <a href="../index.html" class="text-accent hover:text-accent2 transition-colors">Inicio</a></p>

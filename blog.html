@@ -16,57 +16,76 @@
         colors: {
           ink: '#04060e',
           surface: '#080d1a',
+          card: '#0c1326',
           accent: '#5b8cff',
           accent2: '#8b5cf6',
           accent3: '#2dd4ee',
-          muted: '#8b93a7'
+          muted: '#94a1bd'
+        },
+        fontFamily: {
+          display: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
+          body: ['"Inter"', 'system-ui', 'sans-serif'],
         }
       }
     }
   }
 </script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/blog-theme.css" />
 </head>
-<body class="bg-[#04060e] text-slate-300 font-sans leading-relaxed">
-  <header class="border-b border-white/5 py-6">
-    <div class="max-w-4xl mx-auto px-6 flex items-center justify-between">
-      <a href="index.html" class="font-bold text-white text-xl tracking-tight">PIRIA</a>
-      <a href="index.html#contacto" class="text-sm text-accent hover:text-accent2 transition-colors">Contacto</a>
-    </div>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">
+    <div class="bg-grid absolute inset-0"></div>
+    <div class="aurora w-[420px] h-[420px] bg-accent/45 -top-32 -left-32" style="animation:drift-a 15s ease-in-out infinite"></div>
+    <div class="aurora w-[360px] h-[360px] bg-accent2/35 top-1/3 -right-36" style="animation:drift-b 19s ease-in-out infinite"></div>
+    <div class="aurora w-[300px] h-[300px] bg-accent3/25 bottom-0 left-1/3" style="animation:drift-c 22s ease-in-out infinite"></div>
+  </div>
+  <header class="fixed top-0 inset-x-0 z-50 backdrop-blur-md bg-ink/60 border-b border-white/5">
+    <nav class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+      <a href="index.html" class="font-display font-bold text-xl tracking-tight flex items-center gap-2.5">
+        <span class="w-2.5 h-2.5 rounded-full bg-gradient-to-br from-accent to-accent2 shadow-[0_0_14px_2px_rgba(91,140,255,.8)]"></span>
+        <span class="grad-text">PIRIA</span>
+      </a>
+      <a href="index.html#contacto" class="btn-primary px-5 py-2 text-sm font-medium text-white">Contacto</a>
+    </nav>
   </header>
-  <main class="max-w-4xl mx-auto px-6 py-12">
+  <main class="relative max-w-4xl mx-auto px-6 pt-28 pb-16">
     <h1 class="text-3xl md:text-4xl font-bold text-white mb-4">Blog — tecnología que se entiende y se aplica</h1>
     <p class="text-muted mb-12">Ideas, guías y casos reales sobre software, automatización e inteligencia artificial para empresas.</p>
 
     <div class="grid gap-6">
-      <a href="blog/embudo-de-ventas.html" class="block rounded-2xl border border-white/10 bg-surface p-6 hover:border-accent/40 transition-colors">
+      <a href="blog/embudo-de-ventas.html" class="card block rounded-2xl p-6">
         <span class="text-xs text-accent3 uppercase tracking-widest">Ventas y automatización</span>
         <h2 class="text-xl font-semibold text-white mt-2">El embudo de ventas: qué es, por qué te interesa y cómo automatizarlo</h2>
         <p class="text-muted mt-2 text-sm">Descubre cómo funciona el viaje de un cliente desde que te descubre hasta que te compra — y qué partes se pueden automatizar con software a la medida.</p>
         <span class="text-xs text-muted mt-3 block">30 de octubre de 2026</span>
       </a>
 
-      <a href="blog/automatizar-negocio-pequeno.html" class="block rounded-2xl border border-white/10 bg-surface p-6 hover:border-accent/40 transition-colors">
+      <a href="blog/automatizar-negocio-pequeno.html" class="card block rounded-2xl p-6">
         <span class="text-xs text-accent3 uppercase tracking-widest">Automatización</span>
         <h2 class="text-xl font-semibold text-white mt-2">Cómo automatizar un negocio pequeño sin ser experto en tecnología</h2>
         <p class="text-muted mt-2 text-sm">Los 5 procesos que debes automatizar primero, qué herramientas existen y cuándo conviene un sistema a la medida.</p>
         <span class="text-xs text-muted mt-3 block">30 de octubre de 2026</span>
       </a>
 
-      <a href="blog/negocio-no-aparece-en-google.html" class="block rounded-2xl border border-white/10 bg-surface p-6 hover:border-accent/40 transition-colors">
+      <a href="blog/negocio-no-aparece-en-google.html" class="card block rounded-2xl p-6">
         <span class="text-xs text-accent3 uppercase tracking-widest">SEO y marketing</span>
         <h2 class="text-xl font-semibold text-white mt-2">Por qué tu negocio no aparece en Google (y qué hacer al respecto)</h2>
         <p class="text-muted mt-2 text-sm">Las 6 razones más comunes por las que un negocio es invisible en buscadores — y las soluciones concretas para cada una.</p>
         <span class="text-xs text-muted mt-3 block">30 de octubre de 2026</span>
       </a>
 
-      <a href="blog/google-business-profile.html" class="block rounded-2xl border border-white/10 bg-surface p-6 hover:border-accent/40 transition-colors">
+      <a href="blog/google-business-profile.html" class="card block rounded-2xl p-6">
         <span class="text-xs text-accent3 uppercase tracking-widest">SEO y marketing</span>
         <h2 class="text-xl font-semibold text-white mt-2">Google Business Profile: la ficha gratis que te da clientes locales</h2>
         <p class="text-muted mt-2 text-sm">El mapa de Google sale antes que cualquier sitio web — cómo llenar tu ficha de negocio para ganarlo sin pagar un peso.</p>
         <span class="text-xs text-muted mt-3 block">30 de octubre de 2026</span>
       </a>
 
-      <a href="blog/landing-page-vs-sitio-web.html" class="block rounded-2xl border border-white/10 bg-surface p-6 hover:border-accent/40 transition-colors">
+      <a href="blog/landing-page-vs-sitio-web.html" class="card block rounded-2xl p-6">
         <span class="text-xs text-accent3 uppercase tracking-widest">SEO y marketing</span>
         <h2 class="text-xl font-semibold text-white mt-2">Landing page vs. sitio web completo: qué necesita tu negocio</h2>
         <p class="text-muted mt-2 text-sm">Cuándo una sola página basta y cuándo necesitas un ecosistema — la guía para no pagar de más ni quedarte corto.</p>
