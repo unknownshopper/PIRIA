@@ -106,7 +106,8 @@
 <meta name="twitter:description" content="Software a la medida, automatización de procesos, IA e inteligencia de negocios para empresas e instituciones en México." />
 <meta name="twitter:image" content="https://unknownshopper.github.io/PIRIA/og-cover.png" />
 <script src="https://cdn.tailwindcss.com"></script>
-<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<link rel="preconnect" href="https://unpkg.com" crossorigin />
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
 <script>
   tailwind.config = {
     theme: {
@@ -900,7 +901,7 @@
 </div>
 
 <script>
-  lucide.createIcons();
+  document.addEventListener('DOMContentLoaded', () => lucide.createIcons());
 
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
