@@ -1114,7 +1114,17 @@
         if (i === drag) { n.vx = n.vy = 0; return; }
         if (i === 0) { n.x = GW / 2; n.y = GH / 2; n.vx = n.vy = 0; return; }
         if (n.svc) { n.vx += (n.ax - n.x) * .006; n.vy += (n.ay - n.y) * .006; }
-        else { n.vx += (n.x - GW / 2) * .0014; n.vy += (n.y - GH / 2) * .0014; }
+        else {
+          const ox = n.x - GW / 2, oy = n.y - GH / 2;
+          const od = Math.hypot(ox, oy) || 1;
+          const push = Math.min(od * .0014, .5);
+          n.vx += ox / od * push; n.vy += oy / od * push;
+          const M = 44;
+          if (n.x < M) n.vx += (M - n.x) * .04;
+          else if (n.x > GW - M) n.vx += (GW - M - n.x) * .04;
+          if (n.y < M) n.vy += (M - n.y) * .04;
+          else if (n.y > GH - M) n.vy += (GH - M - n.y) * .04;
+        }
         n.vx *= .88; n.vy *= .88;
         n.x += n.vx; n.y += n.vy;
       });
