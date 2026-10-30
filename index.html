@@ -1070,7 +1070,7 @@
       gx.setTransform(d, 0, 0, d, 0, 0);
     }
     function ginit() {
-      const rx = GW * .33, ry = GH * .37;
+      const rx = GW * .36, ry = GH * .4;
       gnodes.forEach((n, i) => {
         if (i === 0) { n.x = GW / 2; n.y = GH / 2; }
         else if (i <= 6) {
@@ -1087,7 +1087,7 @@
     }
     function restOf(a, b) {
       if (a <= 6 && b <= 6) return Math.min(GW, GH) * .6;
-      return Math.min(GW, GH) * .28;
+      return Math.min(GW, GH) * .34;
     }
     function gstep() {
       for (let i = 0; i < gnodes.length; i++) {
@@ -1097,7 +1097,7 @@
           const m = gnodes[j];
           const dx = n.x - m.x, dy = n.y - m.y;
           const d = Math.hypot(dx, dy) || .01;
-          const f = Math.min(5600 / (d * d), 1.2);
+          const f = Math.min(8600 / (d * d), 1.5);
           n.vx += (dx / d) * f * .12; n.vy += (dy / d) * f * .12;
         }
       }
@@ -1114,7 +1114,7 @@
         if (i === drag) { n.vx = n.vy = 0; return; }
         if (i === 0) { n.x = GW / 2; n.y = GH / 2; n.vx = n.vy = 0; return; }
         if (n.svc) { n.vx += (n.ax - n.x) * .006; n.vy += (n.ay - n.y) * .006; }
-        else { n.vx += (GW / 2 - n.x) * .001; n.vy += (GH / 2 - n.y) * .001; }
+        else { n.vx += (n.x - GW / 2) * .0014; n.vy += (n.y - GH / 2) * .0014; }
         n.vx *= .88; n.vy *= .88;
         n.x += n.vx; n.y += n.vy;
       });
