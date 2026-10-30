@@ -731,16 +731,42 @@
 </section>
 
 <!-- FOOTER -->
-<footer class="border-t border-white/5 py-10">
-  <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-    <div>
-      <span class="font-display font-bold text-lg grad-text">PIRIA</span>
+<footer class="relative border-t border-white/5">
+  <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent3/70 to-transparent" aria-hidden="true"></div>
+  <div class="max-w-6xl mx-auto px-6 pt-14 pb-8">
+    <div class="grid md:grid-cols-4 gap-10">
+      <!-- Marca -->
+      <div class="md:col-span-2">
+        <a href="#" class="font-display font-bold text-xl tracking-tight flex items-center gap-2.5 w-fit">
+          <span class="w-2.5 h-2.5 rounded-full bg-gradient-to-br from-accent to-accent2 shadow-[0_0_14px_2px_rgba(91,140,255,.8)]"></span>
+          <span class="grad-text">PIRIA</span>
+        </a>
+        <p class="text-sm text-muted mt-4 leading-relaxed max-w-sm">Tecnología con propósito. Soluciones con inteligencia.<br>Con sede en Tabasco · Trabajamos con clientes en todo México.</p>
+      </div>
+      <!-- Secciones -->
+      <div>
+        <p class="text-xs tracking-[.2em] uppercase text-accent3 font-medium mb-4">Sitio</p>
+        <ul class="space-y-2.5">
+          <li><a href="#servicios" class="text-sm text-muted hover:text-white transition-colors">Servicios</a></li>
+          <li><a href="#ecosistema" class="text-sm text-muted hover:text-white transition-colors">Ecosistema</a></li>
+          <li><a href="#metodologia" class="text-sm text-muted hover:text-white transition-colors">Metodología</a></li>
+          <li><a href="#faq" class="text-sm text-muted hover:text-white transition-colors">Preguntas frecuentes</a></li>
+          <li><a href="#contacto" class="text-sm text-muted hover:text-white transition-colors">Contacto</a></li>
+        </ul>
+      </div>
+      <!-- Explora -->
+      <div>
+        <p class="text-xs tracking-[.2em] uppercase text-accent3 font-medium mb-4">Explora</p>
+        <ul class="space-y-2.5">
+          <li><a href="portafolio.html" class="text-sm text-muted hover:text-white transition-colors">Casos de uso</a></li>
+          <li><a href="blog.html" class="text-sm text-muted hover:text-white transition-colors">Blog</a></li>
+          <li><a href="aviso.html" class="text-sm text-muted hover:text-white transition-colors">Aviso de privacidad</a></li>
+        </ul>
+      </div>
     </div>
-    <div class="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-8">
-      <p class="text-sm text-muted">Tecnología con propósito. Soluciones con inteligencia.<br>Con sede en Tabasco · Trabajamos con clientes en todo México.</p>
-      <a href="portafolio.html" class="text-sm text-muted hover:text-accent transition-colors">Casos de uso</a>
-      <a href="blog.html" class="text-sm text-muted hover:text-accent transition-colors">Blog</a>
-      <a href="aviso.html" class="text-sm text-muted hover:text-accent transition-colors">AVISO</a>
+    <div class="mt-12 pt-6 border-t border-white/5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+      <p class="text-xs text-muted/70">© 2026 PIRIA · Todos los derechos reservados.</p>
+      <p class="text-xs text-muted/70">Software a la medida desde Tabasco para todo México.</p>
     </div>
   </div>
 </footer>
