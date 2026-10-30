@@ -1019,22 +1019,29 @@
       { id: 'Inteligencia de negocios', r: 9, c: '#5b8cff', svc: true },
       { id: 'Soluciones digitales', r: 9, c: '#8b5cf6', svc: true },
       { id: 'Evolución continua', r: 9, c: '#2dd4ee', svc: true },
+      { id: 'Punto de venta', r: 5, c: '#94a1bd' },
+      { id: 'Oil & gas', r: 5, c: '#94a1bd' },
       { id: 'Sin hojas de cálculo', r: 5, c: '#94a1bd' },
       { id: 'Flujos autónomos', r: 5, c: '#94a1bd' },
       { id: 'Datos que responden', r: 5, c: '#94a1bd' },
+      { id: 'Videovigilancia IA', r: 5, c: '#94a1bd' },
       { id: 'Tableros vivos', r: 5, c: '#94a1bd' },
-      { id: 'Canales conectados', r: 5, c: '#94a1bd' },
+      { id: 'Decisiones con datos', r: 5, c: '#94a1bd' },
+      { id: 'E-commerce', r: 5, c: '#94a1bd' },
+      { id: 'SEO y contenido', r: 5, c: '#94a1bd' },
+      { id: 'Integraciones y APIs', r: 5, c: '#94a1bd' },
       { id: 'Siempre al día', r: 5, c: '#94a1bd' },
     ];
     const gedges = [
       [0,1],[0,2],[0,3],[0,4],[0,5],[0,6],
-      [1,7],[2,8],[3,9],[4,10],[5,11],[6,12],
+      [1,7],[1,8],[2,9],[2,10],[3,11],[3,12],[4,13],[4,14],[5,15],[5,16],[6,17],[6,18],
       [1,3],[2,4],[3,6],[1,5],[4,6],[2,5],
     ];
 
     /* Paquetes de info: recorren las ramas una a la vez */
+    const leafOf = [[7,8],[9,10],[11,12],[13,14],[15,16],[17,18]];
     const routes = [];
-    for (let i = 1; i <= 6; i++) routes.push([0, i, i + 6]);
+    leafOf.forEach((leaves, k) => leaves.forEach(l => routes.push([0, k + 1, l])));
     [[1,3],[2,4],[3,6],[1,5],[4,6],[2,5]].forEach(([a, b]) => routes.push([0, a, b]));
     let pk = null, pkWait = 40, rIdx = 0;
     function pkStep() {
@@ -1069,7 +1076,7 @@
           n.ay = Math.min(Math.max(GH / 2 + Math.sin(a) * ry, 60), GH - 60);
           n.x = n.ax + (Math.random() - .5) * 40; n.y = n.ay + (Math.random() - .5) * 40;
         } else {
-          const p = gnodes[i - 6];
+          const p = gnodes[Math.floor((i - 7) / 2) + 1];
           n.x = p.x + (Math.random() - .5) * 120; n.y = p.y + (Math.random() - .5) * 120;
         }
         n.vx = 0; n.vy = 0;
