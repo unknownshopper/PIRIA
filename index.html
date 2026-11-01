@@ -1017,7 +1017,7 @@
   const gc = document.getElementById('graph');
   if (gc) {
     const gx = gc.getContext('2d');
-    let GW = 0, GH = 0, hover = -1, drag = -1, gvis = false;
+    let GW = 0, GH = 0, hover = -1, drag = -1, downAt = null, gvis = false;
 
     const gnodes = [
       { id: 'PIRIA', r: 15, c: '#2dd4ee', big: true },
@@ -1192,28 +1192,39 @@
     function gpos(e) { const r = gc.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; }
     function gpick(x, y) { let f = -1; gnodes.forEach((n, i) => { if (Math.hypot(n.x - x, n.y - y) < n.r + 18) f = i; }); return f; }
 
+    gc.style.touchAction = 'pan-y'; // scroll vertical libre; drag horizontal sí captura
     gc.addEventListener('pointerdown', (e) => {
       const [x, y] = gpos(e);
-      drag = gpick(x, y);
-      if (drag !== -1) {
+      const p = gpick(x, y);
+      if (p !== -1) {
+        downAt = [x, y, p]; // candidato: no arrastra hasta superar umbral
+        hover = p;
         gc.setPointerCapture(e.pointerId);
-        gnodes[drag].vx = gnodes[drag].vy = 0;
-        hover = drag;
-        gc.style.cursor = 'grabbing';
       }
     });
     gc.addEventListener('pointermove', (e) => {
       const [x, y] = gpos(e);
-      if (drag !== -1) {
-        const n = gnodes[drag];
-        n.x = x; n.y = y; n.vx = n.vy = 0;
-        hover = drag;
+      if (downAt) {
+        if (drag === -1 && Math.hypot(x - downAt[0], y - downAt[1]) > 7) {
+          drag = downAt[2]; // arrastre real
+          gnodes[drag].vx = gnodes[drag].vy = 0;
+        }
+        if (drag !== -1) {
+          const n = gnodes[drag];
+          n.x = x; n.y = y; n.vx = n.vy = 0;
+          hover = drag;
+          gc.style.cursor = 'grabbing';
+        }
       } else {
         hover = gpick(x, y);
         gc.style.cursor = hover !== -1 ? 'grab' : 'default';
       }
     }, { passive: true });
-    const gend = () => { drag = -1; gc.style.cursor = hover !== -1 ? 'grab' : 'default'; };
+    const gend = () => {
+      if (downAt && drag === -1) hover = downAt[2]; // tap = inspeccionar nodo
+      drag = -1; downAt = null;
+      gc.style.cursor = hover !== -1 ? 'grab' : 'default';
+    };
     gc.addEventListener('pointerup', gend);
     gc.addEventListener('pointercancel', gend);
     gc.addEventListener('mouseleave', () => { if (drag === -1) hover = -1; });
